@@ -71,6 +71,71 @@
             font-size: 18px;
             text-decoration: none;
         }
+
+        .next-section {
+            background-color: #b3b3b3;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .next-section img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .next-section p {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .features-section {
+            background-color: #b3b3b3;
+            padding: 50px 20px;
+            text-align: left;
+        }
+
+        .features-section h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .feature h3 {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        .feature p {
+            font-size: 16px;
+        }
+
+        .feature-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #999;
+        }
+
+        .features-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .feature {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .fullscreen-image {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -103,6 +168,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+    <div class="next-section">
+        <p>Un vistazo a Genuiz...</p>
+        <img src="https://st2.depositphotos.com/1518767/11965/v/600/depositphotos_119657522-stock-video-school-kids-using-digital-tablet.jpg"
+            alt="Un vistazo a Genuiz" class="fullscreen-image">
+    </div>
+
+    <div class="features-section">
+        <h2>Lo mejor de Genuiz</h2>
+        <div class="row">
+            <div class="col-md-4 feature">
+                <div class="feature-number">01</div>
+                <h3>Rapidez</h3>
+                <p>La rapidez también es un principio fundamental en la creación de exámenes en nuestra plataforma.
+                    Gracias a nuestra avanzada tecnología de inteligencia artificial, los exámenes se generan de forma
+                    instantánea.</p>
+            </div>
+            <div class="col-md-4 feature">
+                <div class="feature-number">02</div>
+                <h3>Eficiencia</h3>
+                <p>Nuestra plataforma se distingue por su eficiencia sobresaliente. Gracias a la integración de la
+                    inteligencia artificial, nuestros exámenes se administran de manera rápida y efectiva.</p>
+            </div>
+            <div class="col-md-4 feature">
+                <div class="feature-number">03</div>
+                <h3>Personalización</h3>
+                <p>En nuestra plataforma, la personalización del examen es una característica destacada. Nuestra
+                    inteligencia artificial ajusta cada cuestionario teniendo en cuenta diversos factores.</p>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
