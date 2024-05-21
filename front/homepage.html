@@ -151,7 +151,7 @@
                     <a class="nav-link" href="#">Inicia sesión</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Regístrate</a>
+                    <a class="nav-link" href="#" id="registerLink">Regístrate</a>
                 </li>
             </ul>
         </div>
@@ -199,6 +199,12 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('registerLink').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = "registrarme.html";
+        });
+    </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
