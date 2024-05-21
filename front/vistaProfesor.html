@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examen 1 - Genuiz</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: #b3b3b3;
+      color: black;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      background-color: #e0e0e0;
+      padding: 20px;
+      width: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .sidebar img {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+    }
+    .sidebar h4 {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: black;
+      width: 100%;
+      text-align: center;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+    .sidebar a:hover {
+      background-color: #d0d0d0;
+    }
+    .sidebar .btn-new-exam {
+      margin-top: auto;
+      background-color: black;
+      color: white;
+      border-radius: 20px;
+      padding: 10px 20px;
+      text-decoration: none;
+      text-align: center;
+    }
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+    .main-content h2 {
+      margin-bottom: 20px;
+    }
+    .room-number {
+      background-color: black;
+      color: white;
+      border-radius: 20px;
+      padding: 10px 20px;
+      display: inline-block;
+      margin-bottom: 30px;
+    }
+    .grades {
+      list-style: none;
+      padding: 0;
+    }
+    .grades li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .grade-circle {
+      background-color: black;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <img src="https://via.placeholder.com/80" alt="Profesor">
+    <h4>Profesor</h4>
+    <a href="#">Historial</a>
+    <a href="#">Examen 1</a>
+    <a href="#">Examen 2</a>
+    <a href="#">Examen 3</a>
+    <a href="#" class="btn-new-exam">Nuevo examen</a>
+  </div>
+
+  <div class="main-content">
+    <h2>Examen 1</h2>
+    <div class="room-number">Número de sala: 1758</div>
+    <h4>Calificaciones</h4>
+    <ul class="grades">
+      <li>
+        <span>Eduardo Valenzuela</span>
+        <div class="grade-circle">9.6</div>
+      </li>
+      <li>
+        <span>Jaime de la Torre</span>
+        <div class="grade-circle">8.9</div>
+      </li>
+      <li>
+        <span>Carmela Salazar</span>
+        <div class="grade-circle">10</div>
+      </li>
+    </ul>
+  </div>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
