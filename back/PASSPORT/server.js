@@ -38,10 +38,15 @@ passport.deserializeUser(function(id, done){
 
 app.set('view engine', 'ejs');
 
-app.get("/", (req,res) =>{
+app.get("/",(req,res,next)=>{
+    if (req.isAuthenticated()) return next();
 
+    res.redirect("/login");
+},(req,res) =>{
     //si ya iniciamos mostrar bienvenida 
+    
     //si no hemos iniciado sesion redireccionar a /login
+    res.send("HOLA DANIELA");
 })
 
 app.get("/login",(req,res) => {
@@ -49,8 +54,9 @@ app.get("/login",(req,res) => {
     res.render("login");
 });
 
-app.post("/login", (req,res)=>{
-    //recibir credenciales e iniciar sesion 
-});
+app.post("/login", passport.authenticate('local',{
+    successRedirect: "/",
+    failureRedirect: "/login"
+}));
 
 app.listen(8080, ()=> console.log("Server started")); 
