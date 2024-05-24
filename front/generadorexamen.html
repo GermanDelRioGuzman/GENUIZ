@@ -52,12 +52,27 @@
   <div class="new-exam-section">
     <h2>Crea un nuevo examen</h2>
     <form>
-      <input type="text" class="form-control" placeholder="Tema / Temas">
+      <input type="text" class="form-control" placeholder="Tema / Temas" id="Tema">
       <input type="number" class="form-control" placeholder="Cantidad de preguntas">
       <input type="text" class="form-control" placeholder="Nivel de dificultad">
       <button type="submit" class="btn btn-generate">Generar</button>
     </form>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoades',function (){
+      var input = document.getElementById('Tema');
+
+      //this is the event thath shoot every time the user write something in the input
+      input.addEventListener('input', function (){
+        var valor= input.value;
+        document.getElementById('Tema').textContent = valor;
+        console.log(valor);
+
+      });
+    });
+  </script>
+
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
