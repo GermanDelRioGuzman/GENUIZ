@@ -25,21 +25,52 @@ const openai = new OpenAI({
 async function main() {
     // Servir archivos estáticos desde la carpeta public
     app.use(express.static('public'));
+    app.use(express.json()); //uso json
 
-    
+    let history = []; //historial de la conversación
+
+    // Ruta para manejar la petición POST
+    app.post('/recibir-datos', async (req, res) => {
+        if (!req.body || !req.body.miDato) {  //si no hay un mensaje en el body
+            return res.status(400).json({ error: "Bad Request or missing request" }); //devuelvo un error
+        }
+        console.log('Dato recibido:', req.body.miDato);  // Accedemos al dato enviado como JSON
+
+        let miDato = req.body.miDato; //el mensaje que viene del body
+
+        let messages = [{ role: "user", content: miDato }]; //  el mensaje que viene del usuario
+
+        try { //intento hacer una petición a la api de openai
+            const completion = await openai.chat.completions.create({ //creo una conversación
+                model: "gpt-3.5-turbo", //modelo
+                messages: messages //mensajes
+            });
+
+            let botResponse = completion.choices[0].message; //la respuesta del bot
+
+            history.push(messages[0]); //guardo el mensaje del usuario en el historial
+            history.push({ role: "bot", content: botResponse }); //guardo la respuesta en el historial
+
+            res.json({ //devuelvo un json con el mensaje
+                botResponse,
+                history
+            });
+
+            console.log('Respuesta del bot:', botResponse); //imprimo en consola la respuesta del bot
+
+        } catch { //si hay un error
+            console.error("Error form openai api", error); //imprimo en consola
+            res.status(500).json({ error: "Internal Server Error" }) //devuelvo un error
+
+        }
+    });
+
+
+
     // Ruta para manejar la petición POST
     app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`);
     });
-
-    app.use(express.json()); //uso json
-    
-    // Ruta para manejar la petición POST
-    app.post('/recibir-datos', (req, res) => {
-        console.log('Dato recibido:', req.body.miDato);  // Accedemos al dato enviado como JSON
-        res.send('Dato procesado en el servidor: ' + req.body.miDato);
-    });
-
 
 }
 
