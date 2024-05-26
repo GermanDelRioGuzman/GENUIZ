@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #b3b3b3;
+    color: black;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#examenContainer {
+    background-color: #b3b3b3;
+    padding: 50px 20px;
+    border-radius: 10px;
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+.question h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.option {
+    margin-bottom: 10px;
+}
+
+#finalizarBtn {
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    text-decoration: none;
+    border: none;
+    display: block;
+    margin: 20px auto 0 auto;
+}
+
+#finalizarBtn:hover {
+    background-color: #3f4240;
+}
