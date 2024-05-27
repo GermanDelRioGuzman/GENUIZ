@@ -27,8 +27,6 @@ async function main() {
     app.use(express.static('public'));
     app.use(express.json()); //uso json
 
-    let history = []; //historial de la conversación
-
     // Ruta para manejar la petición POST
     app.post('/recibir-datos', async (req, res) => {
         if (!req.body || !req.body.miDato) {  //si no hay un mensaje en el body
@@ -48,12 +46,8 @@ async function main() {
 
             let botResponse = completion.choices[0].message; //la respuesta del bot
 
-            history.push(messages[0]); //guardo el mensaje del usuario en el historial
-            history.push({ role: "bot", content: botResponse }); //guardo la respuesta en el historial
-
             res.json({ //devuelvo un json con el mensaje
-                botResponse,
-                history
+                botResponse
             });
 
             console.log('Respuesta del bot:', botResponse); //imprimo en consola la respuesta del bot

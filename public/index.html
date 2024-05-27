@@ -65,26 +65,7 @@
       <button id="generate" class="btn btn-generate">Generar</button>
     </form>
   </div>
-  <script>
-    document.getElementById('generate').addEventListener('click', function () {
-      var inputCP = document.getElementById('Np').value; // Obtiene el valor del input
-      var dificultad = document.getElementById('Dif').value; // Obtiene el valor del input
-      var inputTema = document.getElementById('Tema').value;  // Obtiene el valor del input
-      //prompt to ask for the exam
-      var prompt = `Necesito que desarrolles un examen en un archivo tpo json el cual abarque lo siguiente: Tema: ${inputTema}, Cantidad de preguntas: ${inputCP}, Nivel de dificultad: ${dificultad}"`;
-
-      fetch('/recibir-datos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'  // Indicamos que enviaremos JSON
-        },
-        body: JSON.stringify({ miDato: prompt })  // Enviamos el dato como JSON
-      }).then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
-    });
-
-  </script>
+  <script src="examen.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
