@@ -65,7 +65,41 @@
       <button id="generate" class="btn btn-generate">Generar</button>
     </form>
   </div>
-  <script src="examen.js"></script>
+  <div id="responseContainer">Aquí se mostrará la respuesta del servidor.</div>
+  <script>
+    document.getElementById('generate').addEventListener('click', function (e) {
+      e.preventDefault();  // Prevenir el comportamiento por defecto del botón
+
+      var inputCP = document.getElementById('Np').value;
+      var dificultad = document.getElementById('Dif').value;
+      var inputTema = document.getElementById('Tema').value;
+
+      var prompt = `Necesito que desarrolles un examen en formato JSON, el tema del examen será ${inputTema}, la dificultad del examen será ${dificultad} y el número de preguntas será ${inputCP}`;
+
+      fetch('/recibir-datos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ miDato: prompt })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('responseContainer').innerText = JSON.stringify(data, null, 2);  // Mostrando la respuesta en formato JSON
+          localStorage.setItem('examenData', JSON.stringify(data));
+          window.location.href = 'vistaEstudiante.html';
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('responseContainer').innerText = 'Error al recibir los datos: ' + error.message;
+        });
+    });
+  </script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
