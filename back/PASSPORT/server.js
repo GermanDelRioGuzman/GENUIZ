@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const PassportLocal = require('passport-local').Strategy;
 
+
 //const bcrypt = require('bcrypt'); //hash de contraseñas
 const mysql = require('mysql'); // librería de MySQLote
 
@@ -56,7 +57,6 @@ passport.use(new PassportLocal(function(username, password, done){
         }
 
         // ...
-
         return done(null, user); // autenticaion exitosa
     });
 
@@ -67,27 +67,24 @@ passport.serializeUser(function(user, done){
     done(null, user.id);
 });
 
+//
 passport.deserializeUser(function(id, done){
     done(null, { id: 1, name: "Cody" }); //se devuelve el usuario fijo
-
-
-
 });
 
 app.set('view engine', 'ejs');
 
 app.get("/",(req,res,next)=>{
+    //si no hemos iniciado sesion redireccionar a /login
     if (req.isAuthenticated()) return next();
     res.redirect("/login");
 },(req,res) =>{
     //si ya iniciamos mostrar bienvenida 
-    
-    //si no hemos iniciado sesion redireccionar a /login
     res.send("HOLA DANIELA");
 });
 
-app.get("/login",(req,res) => {
-    res.render("login"); //mostrar el formulario de login 
+app.get("/login", (req, res) => {
+    res.render("login");
 });
 
 app.post("/login", passport.authenticate('local',{
@@ -102,7 +99,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-    const { username, password } = req.body; 
+    const { username, password, phone } = req.body; 
 
     // verifica si el usuario ya existe
     connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
@@ -117,8 +114,8 @@ app.post("/register", (req, res) => {
         }
 
         // agrega el usuario en la base de datos
-        const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
-        connection.query(query, [username, password], (err, results) => {
+        const query = 'INSERT INTO users (username, password, phone) VALUES (?, ?, ?)';
+        connection.query(query, [username, password, phone], (err, results) => {
             if (err) {
                 console.error('Error al registrar usuario', err);
                 return res.redirect('/register');
