@@ -97,13 +97,13 @@
 <body>
 
   <div class="sidebar">
-    <img src="https://via.placeholder.com/80" alt="Profesor">
+    <img src="https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/e40b6ea6361a1abe28f32e7910f63b66/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg" alt="Profesor">
     <h4>Profesor</h4>
     <a href="#">Historial</a>
     <a href="#">Examen 1</a>
     <a href="#">Examen 2</a>
     <a href="#">Examen 3</a>
-    <a href="#" class="btn-new-exam">Nuevo examen</a>
+    <button href="#" id ="new" class="btn-new-exam">Nuevo examen</button>
   </div>
 
   <div class="main-content">
@@ -125,6 +125,10 @@
       </li>
     </ul>
   </div>
+  <script> 
+  document.getElementById("new").addEventListener ("click", function (e) {
+    window.location.href = "generador.html"});
+  </script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

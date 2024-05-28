@@ -67,7 +67,7 @@
     <form>
       <input type="tel" class="form-control" placeholder="Teléfono">
       <input type="password" class="form-control" placeholder="Contraseña">
-      <button type="submit" class="btn btn-login">Iniciar Sesión</button>
+      <button type="submit" id="sesion" class="btn btn-login" >Iniciar Sesión</button>
       <div class="login-section">
         <button type="submit" class="btn btn-login">
           <img class = "google_img"
@@ -78,6 +78,13 @@
       </div>
     </form>
   </div>
+
+<script>
+  document.getElementById('sesion').addEventListener('click', function(e){
+    e.preventDefault();
+    window.location.href = 'vistaProfesor.html';
+  })
+</script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
