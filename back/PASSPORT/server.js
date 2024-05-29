@@ -39,8 +39,6 @@ connection.connect((err) => {
     console.log('Conexión  exitosa');
 });
 
-//
-
 passport.use(new PassportLocal(function(username, password, done){
     //consultar a la base de datos
     connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
@@ -62,12 +60,10 @@ passport.use(new PassportLocal(function(username, password, done){
 
 }));
 
-
 passport.serializeUser(function(user, done){
     done(null, user.id);
 });
 
-//
 passport.deserializeUser(function(id, done){
     done(null, { id: 1, name: "Cody" }); //se devuelve el usuario fijo
 });
@@ -92,8 +88,7 @@ app.post("/login", passport.authenticate('local',{
     failureRedirect: "/login" 
 }));
 
-
-//para registro de usuario
+// para registro de usuario
 app.get("/register", (req, res) => {
     res.render("register"); 
 });
@@ -113,7 +108,7 @@ app.post("/register", (req, res) => {
             return res.redirect('/register');
         }
 
-        // agrega el usuario en la base de datos
+        // Agrega el usuario en la base de datos
         const query = 'INSERT INTO users (username, password, phone) VALUES (?, ?, ?)';
         connection.query(query, [username, password, phone], (err, results) => {
             if (err) {
@@ -126,5 +121,6 @@ app.post("/register", (req, res) => {
         });
     });
 });
-//
+
+// Conexión al puerto
 app.listen(8080, ()=> console.log("Server started")); 
