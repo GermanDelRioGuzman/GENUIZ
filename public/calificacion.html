@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b3b3b3;
+            /* Light grey background similar to your image */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .score-container {
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            /* Dark grey color for the text */
+        }
+
+        .grade {
+            width: 100px;
+            /* Diameter of the circle */
+            height: 100px;
+            /* Diameter of the circle */
+            background-color: #000;
+            /* Black background */
+            color: white;
+            /* White text color */
+            border-radius: 50%;
+            /* Rounded circle */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            /* Centering the circle horizontally */
+            font-size: 24px;
+            /* Larger text size for the score */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="score-container">
+        <h1>Calificación</h1>
+        <div class="grade">
+            
+        </div>
+    </div>
+</body>
+<script>
+    const calificacion = localStorage.getItem('calificacion');
+    const calificacionRedondeada = Math.round(calificacion);
+    const scoreCircle = document.querySelector('.grade');
+    scoreCircle.textContent = calificacionRedondeada;
+</script>
+</html>
