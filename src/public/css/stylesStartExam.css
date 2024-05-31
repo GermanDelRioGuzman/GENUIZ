@@ -1,0 +1,39 @@
+body {
+    background-color: #b3b3b3;
+    color: black;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .exam-entry-section {
+    text-align: center;
+    background-color: #b3b3b3;
+    padding: 50px 20px;
+    border-radius: 10px;
+  }
+  .exam-entry-section h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+  .exam-entry-section .form-control {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    width: 300px;
+    display: inline-block;
+  }
+  .exam-entry-section .btn-start {
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    text-decoration: none;
+    border: none;
+  }
