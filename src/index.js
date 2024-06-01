@@ -24,7 +24,7 @@ const openai = new OpenAI({
 //función asincrona 
 async function main() {
     // Servir archivos estáticos desde la carpeta public
-    app.use(express.static('public'));
+    app.use(express.static('views'));
     app.use(express.json()); //uso json
 
     // Ruta para manejar la petición POST
