@@ -19,5 +19,5 @@ EXPOSE 5000
 # expose the port 5000
 COPY . .
 # copy the content of the local src directory to the working directory
-CMD ["node", "server,js"] 
+CMD ["node", "server.js", "&", "node", "index.js"] 
 # command to run on container start
