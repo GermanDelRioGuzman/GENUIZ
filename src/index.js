@@ -10,6 +10,7 @@ const port = 3000; //creo el puerto
 
 //middelwares
 app.use(cors());    //uso cors
+app.use(express.json()); //uso json
 app.use(bodyParser.json()); //uso body-parser
 
 require('dotenv').config();
@@ -57,9 +58,26 @@ async function main() {
             res.status(500).json({ error: "Internal Server Error" }) //devuelvo un error
 
         }
+
     });
 
+    const sqlite3 = require('sqlite3').verbose();
+    let db = new sqlite3.Database('./my_database.db');
 
+    app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
+
+    app.post('/save-exam', (req, res) => {
+        let examData = req.body.data; // Ahora examData es un string
+        db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send(err);
+            } else {
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.status(200).send({ id: this.lastID });
+            }
+        });
+    });
 
     // Ruta para manejar la petición POST
     app.listen(port, () => {

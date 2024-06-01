@@ -27,6 +27,7 @@
     "openai": "^4.47.1",
     "passport": "^0.7.0",
     "path": "^0.12.7",
+    "sqlite3": "^5.1.7",
     "supports-color": "^9.4.0"
   }
 }

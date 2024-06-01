@@ -107,7 +107,7 @@
     <div id="quizContainer"></div> <!-- Changed from <form> to <div> and ID corrected -->
     <div class="text-center">
       <button class="finalizar btn btn-primary" id="submit">Enviar</button>
-      <button class="guardar btn btn-primary " id="submit">Guardar</button>      
+      <button class="guardar btn btn-primary " id="guardar">Guardar</button>
     </div>
 
     <script>
@@ -159,11 +159,26 @@
               puntaje += 1;
             }
           });
-          var calificacion = (puntaje *10)/CP;
+          var calificacion = (puntaje * 10) / CP;
           localStorage.setItem('calificacion', calificacion);
           window.location.href = 'calificacion.html';
           // alert(`Tu calificación es: ${calificacion}`);
         });
+      });
+
+      document.getElementById('guardar').addEventListener('click', function () {
+        const examData = localStorage.getItem('examData'); // Ahora examData es un string
+
+        fetch('http://localhost:3000/save-exam', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data: examData }), // Enviamos el string como parte de un objeto
+        })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch((error) => console.error('Error:', error));
       });
     </script>
 </body>
