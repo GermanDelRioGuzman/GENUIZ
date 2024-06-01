@@ -196,8 +196,18 @@ h1 {
 
 .login-section {
     background-color: #b3b3b3;
-    padding: 50px 20px;
-    text-align: center;
+    background-color: #b3b3b3;
+      border: none;
+      border-radius: 20px;
+      margin: 20px auto;
+      padding: 50px 20px;
+      text-align: center;
+      width: 100%;
+      /* El ancho del elemento será el 100% del ancho de su contenedor */
+      max-width: 500px;
+      /* El ancho máximo del elemento será de 500px */
+      min-width: 200px;
+      /* El ancho mínimo del elemento será de 200px */
 }
 
 .login-section h2 {
