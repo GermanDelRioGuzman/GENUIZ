@@ -79,6 +79,17 @@ async function main() {
         });
     });
 
+    app.get('/get-exams', (req, res) => {
+        db.all(`SELECT * FROM exams`, [], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            res.status(500).send(err);
+          } else {
+            res.status(200).send(rows);
+          }
+        });
+      });
+
     // Ruta para manejar la petición POST
     app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`);

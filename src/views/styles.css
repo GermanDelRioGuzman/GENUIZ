@@ -267,7 +267,7 @@ h1 {
     text-align: center;
 }
 
-.sidebar a {
+.sidebar button{
     display: block;
     padding: 10px;
     text-decoration: none;
