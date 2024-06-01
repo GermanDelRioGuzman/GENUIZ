@@ -12,6 +12,7 @@ const port = 3000; //creo el puerto
 app.use(cors());    //uso cors
 app.use(express.json()); //uso json
 app.use(bodyParser.json()); //uso body-parser
+app.use(bodyParser.urlencoded({ extended: true })); //uso body-parser
 
 require('dotenv').config();
 //esto es para que se pueda leer el archivo .env
@@ -62,8 +63,25 @@ async function main() {
     });
 
     const sqlite3 = require('sqlite3').verbose();
-    let db = new sqlite3.Database('./my_database.db');
-
+    let db = new sqlite3.Database('./my_database.db', (err) => {
+        if (err) {
+            console.error(err.message);
+        } else {
+            console.log('Connected to the database.');
+            db.run(`CREATE TABLE IF NOT EXISTS exams(
+                    id INTEGER PRIMARY KEY,
+                    data TEXT,
+                    room INTEGER
+                  )`,
+                (err) => {
+                    if (err) {
+                        console.error(err.message);
+                    } else {
+                        console.log("Exams table created successfully");
+                    }
+                });
+        }
+    });
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
     app.post('/save-exam', (req, res) => {
@@ -77,8 +95,9 @@ async function main() {
                 console.error(err.message);
                 res.status(500).send(err);
             } else {
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.status(200).send({ id: this.lastID });
+                console.log(`A row has been inserted with rowid ${this.lastID} and room ${room}`);
+                // Incluye el room en la respuesta
+                res.status(200).send({ id: this.lastID, room: room });
             }
         });
     });
@@ -93,6 +112,23 @@ async function main() {
             }
         });
     });
+
+    app.post('/submit-exam-code', (req, res) => {
+        let roomNumber = req.body['room-number'];
+      
+        db.get(`SELECT * FROM exams WHERE room = ?`, [roomNumber], (err, row) => {
+          if (err) {
+            console.error(err.message);
+            res.status(500).send(err);
+          } else if (row) {
+            // Aquí puedes redirigir al usuario a la página del examen
+            res.redirect(`/exam/${row.id}`);
+          } else {
+            // Si no se encuentra ningún examen con ese número de sala, puedes enviar un mensaje de error
+            res.status(404).send('No se encontró ningún examen con ese número de sala');
+          }
+        });
+      });
 
     // Ruta para manejar la petición POST
     app.listen(port, () => {

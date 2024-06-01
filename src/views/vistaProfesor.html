@@ -139,8 +139,9 @@
               const button = document.createElement('button');
               button.textContent = `Examen ${exam.id}`;
               button.addEventListener('click', function () {
-                // Redirige a la página de detalles del examen
-                window.location.href = `exam-details.html?examId=${exam.id}`;
+                // Aquí puedes manejar el evento de clic en el botón
+                // Por ejemplo, podrías redirigir a la página del examen
+                window.location.href = `exam.html?id=${exam.id}`;
               });
               examsContainer.appendChild(button);
             });
