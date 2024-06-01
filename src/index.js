@@ -68,7 +68,11 @@ async function main() {
 
     app.post('/save-exam', (req, res) => {
         let examData = req.body.data; // Ahora examData es un string
-        db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
+
+        // generate a random number beetwen 1000 and 5000
+        let room = Math.floor(Math.random() * 1001) + 5000;
+
+        db.run(`INSERT INTO exams(data, room) VALUES(?,?)`, [examData, room], function (err) {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
@@ -81,14 +85,14 @@ async function main() {
 
     app.get('/get-exams', (req, res) => {
         db.all(`SELECT * FROM exams`, [], (err, rows) => {
-          if (err) {
-            console.error(err.message);
-            res.status(500).send(err);
-          } else {
-            res.status(200).send(rows);
-          }
+            if (err) {
+                console.error(err.message);
+                res.status(500).send(err);
+            } else {
+                res.status(200).send(rows);
+            }
         });
-      });
+    });
 
     // Ruta para manejar la petición POST
     app.listen(port, () => {

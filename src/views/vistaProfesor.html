@@ -103,7 +103,7 @@
         <button class="button" href="#">Historial</button>
       </div>
       <button href="#" id="new" class="btn-new-exam">Nuevo examen</button>
-   
+
     </div>
 
     <div class="main-content">
@@ -134,13 +134,13 @@
         fetch('http://localhost:3000/get-exams')
           .then(response => response.json())
           .then(data => {
-            const examsContainer = document.getElementById('exams-container');            data.forEach(exam => {
+            const examsContainer = document.getElementById('exams-container');
+            data.forEach(exam => {
               const button = document.createElement('button');
               button.textContent = `Examen ${exam.id}`;
               button.addEventListener('click', function () {
-                // Aquí puedes manejar el evento de clic en el botón
-                // Por ejemplo, podrías redirigir a la página del examen
-                window.location.href = `exam.html?id=${exam.id}`;
+                // Redirige a la página de detalles del examen
+                window.location.href = `exam-details.html?examId=${exam.id}`;
               });
               examsContainer.appendChild(button);
             });
