@@ -1,4 +1,4 @@
-//A01641976 
+
 const OpenAI = require("openai");  //importo la libreria de openai
 const path = require('path'); //importo path
 const express = require('express'); //importo express

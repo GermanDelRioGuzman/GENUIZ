@@ -9,6 +9,10 @@
     <h1>Registro de Usuario</h1>
     <form action="/register" method="POST">
         <div>
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
             <label for="username">Nombre de usuario:</label>
             <input type="text" id="username" name="username" required>
         </div>
@@ -17,8 +21,11 @@
             <input type="password" id="password" name="password" required>
         </div>
         <div>
-            <label for="phone">Numero de telefono:</label>
-            <input type="text" id="phone" name="phone" required>
+            <label for="role">Rol:</label>
+            <select id="role" name="role" required>
+                <option value="student">Estudiante</option>
+                <option value="teacher">Profesor</option>
+            </select>
         </div>
         <button type="submit">Registrarse</button>
     </form>

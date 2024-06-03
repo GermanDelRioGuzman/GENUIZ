@@ -27,8 +27,8 @@ app.use(passport.session());
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'AmoShrek2!#',
-    database: 'genuiz' //la borré sin querer jajan't
+    password: 'password',
+    database: 'genuiz' 
   });
 
 connection.connect((err) => {
@@ -38,6 +38,8 @@ connection.connect((err) => {
     }
     console.log('Conexión  exitosa');
 });
+
+//
 
 passport.use(new PassportLocal(function(username, password, done){
     //consultar a la base de datos
@@ -60,13 +62,26 @@ passport.use(new PassportLocal(function(username, password, done){
 
 }));
 
+
 passport.serializeUser(function(user, done){
     done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done){
-    done(null, { id: 1, name: "Cody" }); //se devuelve el usuario fijo
+//
+
+passport.deserializeUser(function(id, done) {
+    connection.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            return done(err);
+        }
+        done(null, results[0]);
+    });
 });
+
+// passport.deserializeUser(function(id, done){
+//     done(null, { id: 1, name: "Cody" }); //se devuelve el usuario fijo
+// });
+
 
 app.set('view engine', 'ejs');
 
@@ -79,7 +94,7 @@ app.get("/",(req,res,next)=>{
     res.send("HOLA DANIELA");
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", (req, res) => { //ruta login
     res.render("login");
 });
 
@@ -88,13 +103,14 @@ app.post("/login", passport.authenticate('local',{
     failureRedirect: "/login" 
 }));
 
-// para registro de usuario
+
+//para registro de usuario
 app.get("/register", (req, res) => {
     res.render("register"); 
 });
 
 app.post("/register", (req, res) => {
-    const { username, password, phone } = req.body; 
+    const { name, username, password, role } = req.body;  //datos del formulario
 
     // verifica si el usuario ya existe
     connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
@@ -108,9 +124,18 @@ app.post("/register", (req, res) => {
             return res.redirect('/register');
         }
 
-        // Agrega el usuario en la base de datos
-        const query = 'INSERT INTO users (username, password, phone) VALUES (?, ?, ?)';
-        connection.query(query, [username, password, phone], (err, results) => {
+        // Obtener el role_id basado en el `role_name`
+        connection.query('SELECT id FROM role WHERE role_name = ?', [role], (err, results) => {
+            if (err || results.length === 0) {
+                console.error('Error al obtener el role_id', err);
+                return res.redirect('/register');
+            }
+
+        const role_id = results[0].id; // obttener el role_id del resultado de la consulta
+        
+        // agrega el usuario en la base de datos
+        const query = 'INSERT INTO users (name, username, password, role_id) VALUES (?, ?, ?, ?)';
+        connection.query(query, [name, username, password, role_id], (err, results) => {
             if (err) {
                 console.error('Error al registrar usuario', err);
                 return res.redirect('/register');
@@ -119,8 +144,10 @@ app.post("/register", (req, res) => {
             console.log('Usuario registrado');
             res.redirect('/login');
         });
-    });
+     });
+  });
 });
 
-// Conexión al puerto
+//
 app.listen(8080, ()=> console.log("Server started")); 
+
