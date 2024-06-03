@@ -133,7 +133,7 @@
       window.onload = function () {
         fetch('http://localhost:3000/get-exams')
           .then(response => response.json())
-          .then(data => {
+          .then(data => { 
             const examsContainer = document.getElementById('exams-container');
             data.forEach(exam => {
               const button = document.createElement('button');

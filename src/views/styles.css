@@ -511,7 +511,7 @@ button.finalizar:hover {
 
   /* here start the css code for room.html*/
 
-  .room {
+.room {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
