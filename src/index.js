@@ -1,5 +1,5 @@
 
-const openai = require("openai");  //importo la libreria de openai
+const OpenAI = require("openai");  //importo la libreria de openai
 const path = require('path'); //importo path
 const express = require('express'); //importo express
 const bodyParser = require('body-parser'); //importo body-parser
@@ -18,8 +18,9 @@ require('dotenv').config();
 //esto es para que se pueda leer el archivo .env
 
 //nueva conexion con open ai y lo voy a igualar a un objeto
-openai.apiKey = process.env.OPENAI_API_KEY;
-
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+})
 
 
 //función asincrona 
@@ -53,9 +54,9 @@ async function main() {
 
             console.log('Respuesta del bot:', botResponse); //imprimo en consola la respuesta del bot
 
-        } catch (error) { //si hay un error
+        } catch { //si hay un error
             console.error("Error form openai api", error); //imprimo en consola
-            res.status(500).json({ error: "Internal Server Error" }); //devuelvo un error
+            res.status(500).json({ error: "Internal Server Error" }) //devuelvo un error
 
         }
 
@@ -112,7 +113,6 @@ async function main() {
         });
     });
 
-    
     app.post('/submit-exam-code', (req, res) => {
         let roomNumber = req.body['room-number'];
       
@@ -128,10 +128,7 @@ async function main() {
             res.status(404).send('No se encontró ningún examen con ese número de sala');
           }
         });
-    });
-
-
-
+      });
 
     // Ruta para manejar la petición POST
     app.listen(port, () => {
