@@ -53,9 +53,9 @@ async function main() {
 
             console.log('Respuesta del bot:', botResponse); //imprimo en consola la respuesta del bot
 
-        } catch { //si hay un error
+        } catch (error) { //si hay un error
             console.error("Error form openai api", error); //imprimo en consola
-            res.status(500).json({ error: "Internal Server Error" }) //devuelvo un error
+            res.status(500).json({ error: "Internal Server Error" }); //devuelvo un error
 
         }
 
@@ -83,18 +83,18 @@ async function main() {
     });
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
-
     app.post('/save-exam', (req, res) => {
         let examData = req.body.data; // Ahora examData es un string
 
         // generate a random number beetwen 1000 and 5000
+        let room = Math.floor(Math.random() * 1001) + 5000;
 
         db.run(`INSERT INTO exams(data, room) VALUES(?,?)`, [examData, room], function (err) {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
             } else {
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                console.log(`A row has been inserted with rowid ${this.lastID} and room ${room}`);
                 // Incluye el room en la respuesta
                 res.status(200).send({ id: this.lastID, room: room });
             }
@@ -109,6 +109,24 @@ async function main() {
             } else {
                 res.status(200).send(rows);
             }
+        });
+    });
+
+    
+    app.post('/submit-exam-code', (req, res) => {
+        let roomNumber = req.body['room-number'];
+      
+        db.get(`SELECT * FROM exams WHERE room = ?`, [roomNumber], (err, row) => {
+          if (err) {
+            console.error(err.message);
+            res.status(500).send(err);
+          } else if (row) {
+            // Aquí puedes redirigir al usuario a la página del examen
+            res.redirect(`/exam/${row.id}`);
+          } else {
+            // Si no se encuentra ningún examen con ese número de sala, puedes enviar un mensaje de error
+            res.status(404).send('No se encontró ningún examen con ese número de sala');
+          }
         });
     });
 
