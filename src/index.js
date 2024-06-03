@@ -87,15 +87,12 @@ async function main() {
     app.post('/save-exam', (req, res) => {
         let examData = req.body.data; // Ahora examData es un string
 
-        // generate a random number beetwen 1000 and 5000
-        let room = Math.floor(Math.random() * 1001) + 5000;
-
-        db.run(`INSERT INTO exams(data, room) VALUES(?,?)`, [examData, room], function (err) {
+        db.run(`INSERT INTO exams(data) VALUES(?,?)`, [examData], function (err) {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
             } else {
-                console.log(`A row has been inserted with rowid ${this.lastID} and room ${room}`);
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
                 // Incluye el room en la respuesta
                 res.status(200).send({ id: this.lastID, room: room });
             }
@@ -103,32 +100,23 @@ async function main() {
     });
 
     app.get('/get-exams', (req, res) => {
-        db.all(`SELECT * FROM exams`, [], (err, rows) => {
+        const id = req.params.id;
+    
+        db.get(`SELECT * FROM exams WHERE id = ?`, [id], (err, row) => {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
+            } else if (row) {
+                res.status(200).send(row);
             } else {
-                res.status(200).send(rows);
+                res.status(404).send({ error: "No exam found with this ID" });
             }
         });
     });
 
-    app.post('/submit-exam-code', (req, res) => {
-        let roomNumber = req.body['room-number'];
-      
-        db.get(`SELECT * FROM exams WHERE room = ?`, [roomNumber], (err, row) => {
-          if (err) {
-            console.error(err.message);
-            res.status(500).send(err);
-          } else if (row) {
-            // Aquí puedes redirigir al usuario a la página del examen
-            res.redirect(`/exam/${row.id}`);
-          } else {
-            // Si no se encuentra ningún examen con ese número de sala, puedes enviar un mensaje de error
-            res.status(404).send('No se encontró ningún examen con ese número de sala');
-          }
-        });
-      });
+
+
+    // Ruta para obtener el examen basado en el room
 
     // Ruta para manejar la petición POST
     app.listen(port, () => {
