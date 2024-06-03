@@ -1,5 +1,5 @@
 
-const OpenAI = require("openai");  //importo la libreria de openai
+const openai = require("openai");  //importo la libreria de openai
 const path = require('path'); //importo path
 const express = require('express'); //importo express
 const bodyParser = require('body-parser'); //importo body-parser
@@ -18,9 +18,8 @@ require('dotenv').config();
 //esto es para que se pueda leer el archivo .env
 
 //nueva conexion con open ai y lo voy a igualar a un objeto
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-})
+openai.apiKey = process.env.OPENAI_API_KEY;
+
 
 
 //función asincrona 
