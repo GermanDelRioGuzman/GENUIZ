@@ -87,29 +87,25 @@ async function main() {
     app.post('/save-exam', (req, res) => {
         let examData = req.body.data; // Ahora examData es un string
 
-        db.run(`INSERT INTO exams(data) VALUES(?,?)`, [examData], function (err) {
+        db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
             } else {
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
                 // Incluye el room en la respuesta
-                res.status(200).send({ id: this.lastID, room: room });
+                res.status(200).send({ id: this.lastID });
             }
         });
     });
 
     app.get('/get-exams', (req, res) => {
-        const id = req.params.id;
-    
-        db.get(`SELECT * FROM exams WHERE id = ?`, [id], (err, row) => {
+        db.all(`SELECT * FROM exams`, [], (err, rows) => {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
-            } else if (row) {
-                res.status(200).send(row);
             } else {
-                res.status(404).send({ error: "No exam found with this ID" });
+                res.status(200).send(rows);
             }
         });
     });

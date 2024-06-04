@@ -10,86 +10,6 @@
 
   <!-- Direccionamiento a hoja de estilos particular -->
   <link rel="stylesheet" href="styles.css">
-  <!-- Move styles to css -->
-  <!-- <style>
-    
-    .sidebar {
-      background-color: #e0e0e0;
-      padding: 20px;
-      width: 250px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .sidebar img {
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      margin-bottom: 20px;
-    }
-    .sidebar h4 {
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px;
-      text-decoration: none;
-      color: black;
-      width: 100%;
-      text-align: center;
-      margin: 10px 0;
-      border-radius: 10px;
-    }
-    .sidebar a:hover {
-      background-color: #d0d0d0;
-    }
-    .sidebar .btn-new-exam {
-      margin-top: auto;
-      background-color: black;
-      color: white;
-      border-radius: 20px;
-      padding: 10px 20px;
-      text-decoration: none;
-      text-align: center;
-    }
-    .main-content {
-      flex: 1;
-      padding: 40px;
-    }
-    .main-content h2 {
-      margin-bottom: 20px;
-    }
-    .room-number {
-      background-color: black;
-      color: white;
-      border-radius: 20px;
-      padding: 10px 20px;
-      display: inline-block;
-      margin-bottom: 30px;
-    }
-    .grades {
-      list-style: none;
-      padding: 0;
-    }
-    .grades li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .grade-circle {
-      background-color: black;
-      color: white;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-    }
-  </style> -->
 </head>
 
 <body>
@@ -107,23 +27,6 @@
     </div>
 
     <div class="main-content">
-      <h2>Examen 1</h2>
-      <div class="room-number">Número de sala: 1758</div>
-      <h4>Calificaciones</h4>
-      <ul class="grades">
-        <li>
-          <span>Eduardo Valenzuela</span>
-          <div class="grade-circle">9.6</div>
-        </li>
-        <li>
-          <span>Jaime de la Torre</span>
-          <div class="grade-circle">8.9</div>
-        </li>
-        <li>
-          <span>Carmela Salazar</span>
-          <div class="grade-circle">10</div>
-        </li>
-      </ul>
     </div>
     <script>
       document.getElementById("new").addEventListener("click", function (e) {
@@ -142,6 +45,7 @@
                 // Aquí puedes manejar el evento de clic en el botón
                 // Por ejemplo, podrías redirigir a la página del examen
                 window.location.href = `exam.html?id=${exam.id}`;
+                localStorage.setItem('exam', exam.data);
               });
               examsContainer.appendChild(button);
             });
