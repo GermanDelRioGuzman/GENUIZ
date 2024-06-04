@@ -82,6 +82,7 @@ async function main() {
                 });
         }
     });
+
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
     app.post('/save-exam', (req, res) => {
@@ -113,7 +114,22 @@ async function main() {
 
 
     // Ruta para obtener el examen basado en el room
+    app.get('/get-exam', (req, res) => {
+        const examId = req.query.id;
 
+        db.get(`SELECT * FROM exams WHERE id = ?`, [examId], (err, row) => {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send(err);
+            } else {
+                if (row) {
+                    res.status(200).send(row);
+                } else {
+                    res.status(404).send({ message: 'Examen no encontrado' });
+                }
+            }
+        });
+    });
     // Ruta para manejar la petición POST
     app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`);

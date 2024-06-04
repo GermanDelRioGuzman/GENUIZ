@@ -20,7 +20,24 @@
     </div>
 
     <script>
-        
+        document.getElementById('exam-form').addEventListener('submit', function (event) {
+            // Previene el comportamiento de envío de formulario predeterminado
+            event.preventDefault();
+
+            // Obtiene el número de sala ingresado por el usuario
+            const roomNumber = document.getElementById('room-number').value;
+
+            // Haz una solicitud al servidor para obtener los datos del examen
+            fetch(`http://localhost:3000/get-exam?id=${roomNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Aquí puedes manejar los datos del examen devueltos por el servidor
+                    
+                    // Por ejemplo, podrías redirigir al usuario a la página del examen
+                    window.location.href = `exam.html?id=${roomNumber}`;
+                })
+                .catch((error) => console.error('Error:', error));
+        });
     </script>
 </body>
 
