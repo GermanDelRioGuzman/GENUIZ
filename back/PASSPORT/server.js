@@ -1,16 +1,27 @@
+require('dotenv').config(); // Asegúrate de que esta línea esté al principio
+
 const express = require('express');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const PassportLocal = require('passport-local').Strategy;
-const path = require('path'); // módulo path de Node.js
-const mysql = require('mysql'); // librería de MySQL
+const path = require('path');
+const mysql = require('mysql');
+const OpenAI = require('openai');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
+const port = 8080; // Puedes cambiar este puerto si es necesario
 
 // Middleware análisis de datos de formularios
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('secreto'));
+app.use(cors());
 
 app.use(session({
     secret: 'secreto',
@@ -22,7 +33,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Conexión a la base de datos:
+// Conexión a la base de datos MySQL
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -78,8 +89,12 @@ passport.deserializeUser(function(id, done) {
     });
 });
 
-// Rutas
-// Ruta principal, redirige a la página de inicio de sesión si no está autenticado
+// Configuración OpenAI API
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+
+// Rutas de autenticación y vistas
 app.get("/", (req, res) => {
     if (req.isAuthenticated()) {
         const userRole = req.user.role_name;
@@ -95,29 +110,24 @@ app.get("/", (req, res) => {
     }
 });
 
-// Ruta para la página de inicio de sesión
 app.get("/iniciosesion", (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'iniciosesion.html'));
 });
 
-// Ruta para el inicio de sesión
 app.post("/iniciosesion", passport.authenticate('local', {
     successRedirect: "/", // Redirigir al usuario a la página principal donde se redirige según el rol
     failureRedirect: "/iniciosesion"
 }));
 
-// Ruta para la página de registro
 app.get("/registrarme", (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'registrarme.html'));
 });
 
-// Ruta para el registro de usuario
 app.post("/registrarme", (req, res) => {
-    const { name, username, password, role } = req.body; // Datos del formulario
+    const { name, username, password, role } = req.body;
 
     console.log('Datos recibidos del formulario:', req.body);
 
-    // Verifica si el usuario ya existe
     connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
         if (err) {
             console.error('Error en la consulta', err);
@@ -129,18 +139,16 @@ app.post("/registrarme", (req, res) => {
             return res.redirect('/registrarme');
         }
 
-        // Obtener el role_id basado en el `role_name`
         connection.query('SELECT id FROM role WHERE role_name = ?', [role], (err, results) => {
             if (err || results.length === 0) {
                 console.error('Error al obtener el role_id', err);
                 return res.redirect('/registrarme');
             }
 
-            const role_id = results[0].id; // Obtener el role_id del resultado de la consulta
+            const role_id = results[0].id;
 
             console.log('Role ID:', role_id);
 
-            // Agrega el usuario en la base de datos
             const query = 'INSERT INTO users (name, username, password, role_id) VALUES (?, ?, ?, ?)';
             connection.query(query, [name, username, password, role_id], (err, results) => {
                 if (err) {
@@ -155,10 +163,8 @@ app.post("/registrarme", (req, res) => {
     });
 });
 
-// Ruta para servir archivos estáticos
 app.use(express.static(path.join(__dirname, '..', '..', 'src', 'views')));
 
-// Servir archivos HTML de las vistas
 app.get('/vistaEstudiante.html', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'vistaEstudiante.html'));
 });
@@ -167,5 +173,104 @@ app.get('/vistaProfesor.html', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'vistaProfesor.html'));
 });
 
+// Rutas para generar exámenes (OpenAI)
+app.post('/recibir-datos', async (req, res) => {
+    if (!req.body || !req.body.miDato) {  // Si no hay un mensaje en el body
+        return res.status(400).json({ error: "Bad Request or missing request" }); // Devuelvo un error
+    }
+    console.log('Dato recibido:', req.body.miDato);  // Accedemos al dato enviado como JSON
+
+    let miDato = req.body.miDato; // El mensaje que viene del body
+
+    let messages = [{ role: "user", content: miDato }]; // El mensaje que viene del usuario
+
+    try { // Intento hacer una petición a la API de OpenAI
+        const completion = await openai.chat.completions.create({ // Creo una conversación
+            model: "gpt-3.5-turbo", // Modelo
+            messages: messages // Mensajes
+        });
+
+        let botResponse = completion.choices[0].message; // La respuesta del bot
+
+        res.json({ // Devuelvo un JSON con el mensaje
+            botResponse
+        });
+
+        console.log('Respuesta del bot:', botResponse); // Imprimo en consola la respuesta del bot
+
+    } catch (error) { // Si hay un error
+        console.error("Error from openai api", error); // Imprimo en consola
+        res.status(500).json({ error: "Internal Server Error" }) // Devuelvo un error
+    }
+});
+
+// Conexión a la base de datos SQLite
+let db = new sqlite3.Database(path.join(__dirname, '..', '..', 'src', 'my_database.db'), (err) => {
+    if (err) {
+        console.error(err.message);
+    } else {
+        console.log('Connected to the SQLite database.');
+        db.run(`CREATE TABLE IF NOT EXISTS exams(
+                id INTEGER PRIMARY KEY,
+                data TEXT,
+                room INTEGER
+              )`,
+            (err) => {
+                if (err) {
+                    console.error(err.message);
+                } else {
+                    console.log("Exams table created successfully");
+                }
+            });
+    }
+});
+
+// Ruta para guardar exámenes
+app.post('/save-exam', (req, res) => {
+    let examData = req.body.data;
+
+    db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send(err);
+        } else {
+            console.log(`A row has been inserted with rowid ${this.lastID}`);
+            res.status(200).send({ id: this.lastID });
+        }
+    });
+});
+
+// Ruta para obtener todos los exámenes
+app.get('/get-exams', (req, res) => {
+    db.all(`SELECT * FROM exams`, [], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send(err);
+        } else {
+            res.status(200).send(rows);
+        }
+    });
+});
+
+// Ruta para obtener un examen basado en el room
+app.get('/get-exam', (req, res) => {
+    const examId = req.query.id;
+
+    db.get(`SELECT * FROM exams WHERE id = ?`, [examId], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send(err);
+        } else {
+            if (row) {
+                res.status(200).send(row);
+            } else {
+                res.status(404).send({ message: 'Examen no encontrado' });
+            }
+        }
+    });
+});
+
 // Iniciar servidor
-app.listen(8080, () => console.log("Server started"));
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+});
