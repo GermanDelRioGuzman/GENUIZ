@@ -19,7 +19,7 @@
         src="https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/e40b6ea6361a1abe28f32e7910f63b66/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"
         alt="Profesor">
       <h4>Profesor</h4>
-      <div id="exams-container">
+      <div class="exams-container">
         <button class="button" href="#">Historial</button>
       </div>
       <button href="#" id="new" class="btn-new-exam">Nuevo examen</button>
@@ -36,22 +36,30 @@
       window.onload = function () {
         fetch('http://localhost:3000/get-exams')
           .then(response => response.json())
-          .then(data => { 
-            const examsContainer = document.getElementById('exams-container');
-            data.forEach(exam => {
+          .then(exams => {
+            const container = document.querySelector('.exams-container');
+            exams.forEach(exam => {
               const button = document.createElement('button');
               button.textContent = `Examen ${exam.id}`;
-              button.addEventListener('click', function () {
-                // Aquí puedes manejar el evento de clic en el botón
-                // Por ejemplo, podrías redirigir a la página del examen
-                window.location.href = `exam.html?id=${exam.id}`;
-                localStorage.setItem('exam', exam.data);
-              });
-              examsContainer.appendChild(button);
+              button.id = `btn-exam-${exam.id}`;
+              button.className = 'exam-button';
+              container.appendChild(button);
+
+              document.addEventListener("click", function (e) {
+                window.location.href = "exam2.html"
+                fetch(`http://localhost:3000/get-exam/${exam.id}`)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data)
+                })
+                .catch((error) => console.error('Error:', error));
+              })
             });
           })
           .catch((error) => console.error('Error:', error));
       };
+
+
     </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </div>

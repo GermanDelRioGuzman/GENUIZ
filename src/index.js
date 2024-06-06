@@ -101,7 +101,7 @@ async function main() {
     });
 
     app.get('/get-exams', (req, res) => {
-        db.all(`SELECT * FROM exams`, [], (err, rows) => {
+        db.all(`SELECT id FROM exams`, [], (err, rows) => {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
@@ -112,8 +112,7 @@ async function main() {
     });
 
 
-
-    // Ruta para obtener el examen basado en el room
+    // path to obtain the examn bythe button id
     app.get('/get-exam', (req, res) => {
         const examId = req.query.id;
 
