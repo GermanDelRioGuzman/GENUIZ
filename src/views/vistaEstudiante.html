@@ -19,6 +19,7 @@
       <button class="finalizar btn btn-primary" id="submit">Enviar</button>
       <button class="guardar btn btn-primary " id="guardar">Guardar</button>
     </div>
+    
 
     <script>
       var CP = 0;
@@ -78,13 +79,12 @@
 
       document.getElementById('guardar').addEventListener('click', function () {
         
-
         fetch('http://localhost:3000/save-exam', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ data:  JSON.parse(localStorage.getItem('jsonData')) }), // Enviamos el string como parte de un objeto
+          body: JSON.stringify({ data: JSON.parse(localStorage.getItem('jsonData')) }), // Enviamos el string como parte de un objeto
         })
           .then(response => response.json())
           .then(data => console.log(data))

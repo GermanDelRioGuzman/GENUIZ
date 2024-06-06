@@ -84,21 +84,6 @@ async function main() {
 
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
-    app.post('/save-exam', (req, res) => {
-        let examData = req.body.data; //now we have the data
-        db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
-            if (err) {
-                console.error(err.message);
-                res.status(500).send(err);
-            } else {
-                console.log(examData);
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-                // Incluye el room en la respuesta
-                res.status(200).send({ id: this.lastID });
-            }
-        });
-    });
-
     app.get('/get-exams', (req, res) => {
         db.all(`SELECT id FROM exams`, [], (err, rows) => {
             if (err) {
@@ -110,12 +95,26 @@ async function main() {
         });
     });
 
+    //endpoint to save the exam
+    app.post('/save-exam', (req, res) => {
+        let examData = req.body.data; //now we have the data
+        db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send(err);
+            } else {
+                console.log(examData);
+                console.log(`A row has been inserted with row id ${this.lastID}`);
+                res.status(200).send({ id: this.lastID });
+            }
+        });
+    });
 
-    // path to obtain the examn bythe button id
+    // path to obtain the examn by the button id
     app.get('/get-exam', (req, res) => {
         const examId = req.query.id;
 
-        db.get(`SELECT * FROM exams WHERE id = ?`, [examId], (err, row) => {
+        db.get(`SELECT data FROM exams WHERE id = ?`, [examId], (err, row) => {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
