@@ -70,8 +70,7 @@ async function main() {
             console.log('Connected to the database.');
             db.run(`CREATE TABLE IF NOT EXISTS exams(
                     id INTEGER PRIMARY KEY,
-                    data TEXT,
-                    room INTEGER
+                    data TEXT
                   )`,
                 (err) => {
                     if (err) {
@@ -86,13 +85,13 @@ async function main() {
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
     app.post('/save-exam', (req, res) => {
-        let examData = req.body.data; // Ahora examData es un string
-
+        let examData = req.body.data; //now we have the data
         db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
             } else {
+                console.log(examData);
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
                 // Incluye el room en la respuesta
                 res.status(200).send({ id: this.lastID });

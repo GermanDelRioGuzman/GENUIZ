@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
   <!-- Direccionamiento a hoja de estilos particular -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css"> 
 </head>
 
 
@@ -23,9 +23,9 @@
     <script>
       var CP = 0;
       document.addEventListener('DOMContentLoaded', function () {
-        const jsonData = JSON.parse(localStorage.getItem('jsonData'));
+        const jsonData = JSON.parse(localStorage.getItem('jsonData')); 
         const quizContainer = document.getElementById('quizContainer');
-        const content = JSON.parse(jsonData).botResponse.content;
+        const content = JSON.parse(jsonData).botResponse.content; 
 
         const temaHeader = document.createElement('h2');
         temaHeader.textContent = `${content.tema}`;
@@ -77,14 +77,14 @@
       });
 
       document.getElementById('guardar').addEventListener('click', function () {
-        const examData = localStorage.getItem('examData'); // Ahora examData es un string
+        
 
         fetch('http://localhost:3000/save-exam', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ data: examData }), // Enviamos el string como parte de un objeto
+          body: JSON.stringify({ data:  JSON.parse(localStorage.getItem('jsonData')) }), // Enviamos el string como parte de un objeto
         })
           .then(response => response.json())
           .then(data => console.log(data))
