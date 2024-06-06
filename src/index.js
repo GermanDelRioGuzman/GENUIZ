@@ -114,7 +114,7 @@ async function main() {
     app.get('/get-exam', (req, res) => {
         const examId = req.query.id;
 
-        db.get(`SELECT data FROM exams WHERE id = ?`, [examId], (err, row) => {
+        db.get(`SELECT * FROM exams WHERE id = ?`, [examId], (err, row) => {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);

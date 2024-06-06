@@ -30,6 +30,9 @@
 
 
     <script>
+      //global variables
+      let exam;
+      
       document.getElementById("new").addEventListener("click", function (e) {
         window.location.href = "generador.html"
       });
@@ -48,12 +51,12 @@
 
               document.getElementById(`btn-exam-${exam.id}`).addEventListener("click", function (e) {
                 e.preventDefault();
-                // window.location.href = "exam2.html"
+                
                 fetch(`http://localhost:3000/get-exam/${exam.id}`)
                   .then(response => response.json())
                   .then(data => {
-                    // localStorage.setItem('examData', JSON.stringify(data));
-                    let exam = JSON.stringify(data);
+                    exam = null;
+                    exam = JSON.stringify(data);
                   })
                   .catch((error) => console.error('Error:', error));
               })
@@ -66,7 +69,7 @@
       //here starts the code for the exam
       var CP = 0;
       document.addEventListener('DOMContentLoaded', function () {
-        const jsonData = JSON.parse(localStorage.getItem('jsonData'));
+        const jsonData = exam; 
         const quizContainer = document.getElementById('exam-viz');
         const content = JSON.parse(jsonData).botResponse.content;
 
