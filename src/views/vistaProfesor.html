@@ -65,6 +65,8 @@
       document.getElementById("new").addEventListener("click", function (e) {
         window.location.href = "generador.html";
       });
+      //variable to count the exams
+      let cont = 0;
 
       let examData = localStorage.getItem('jsonData');
       
@@ -74,19 +76,20 @@
           .then(exams => {
             const container = document.querySelector('.exams-container');
             exams.forEach(exam => {
-
+              cont++;
               const button = document.createElement('button');
-              button.textContent = `Examen ${exam.id}`;
-              button.id = `btn-exam-${exam.id}`;
+              button.textContent = `Examen ${cont}`;
+              button.id = `btn-exam-${cont}`;
               button.className = 'exam-button';
-              let examObject = JSON.parse(examData); //we need to parse the data because always convert to string when do a assignation, so we need to parse to json again.
+              let examObject = JSON.parse(examData); 
               button.dataset.exam =  examObject; //here we are adding the exam data to the button, examData is a string
               container.appendChild(button);
 
               button.addEventListener("click", function (e) {
                 e.preventDefault();
-                alert(typeof button.dataset.exam);
-                displayExam(JSON.parse(button.dataset.exam)); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
+                alert(JSON.stringify(exam));
+                alert(typeof exam);
+                displayExam(JSON.parse(exam)); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
 
 
               });

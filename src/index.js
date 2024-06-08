@@ -85,7 +85,7 @@ async function main() {
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
     app.get('/get-exams', (req, res) => {
-        db.all(`SELECT id FROM exams`, [], (err, rows) => {
+        db.all(`SELECT data FROM exams`, [], (err, rows) => {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
