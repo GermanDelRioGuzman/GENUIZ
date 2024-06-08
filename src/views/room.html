@@ -13,7 +13,7 @@
     <div class="exam-entry">
         <h1 class="title1 ">Ingresar a un examen</h1>
         <form id="exam-form">
-            <input  class="ri" type="number" id="room-number" name="room-number" placeholder="Número de Sala" required>
+            <input class="ri" type="number" id="room-number" name="room-number" placeholder="Número de Sala" required>
             <!-- the upper line send to the server the room number with the required -->
             <button class="button1" type="submit">Comenzar</button>
         </form>
@@ -32,9 +32,14 @@
                 .then(response => response.json())
                 .then(data => {
                     // Aquí puedes manejar los datos del examen devueltos por el servidor
-                    
-                    // Por ejemplo, podrías redirigir al usuario a la página del examen
-                    window.location.href = `exam.html?id=${roomNumber}`;
+                    let exam = JSON.stringify(data);
+                    const parsedExam = JSON.parse(exam);
+                    const examData = JSON.parse(parsedExam.data); 
+
+                    localStorage.setItem('examData', JSON.stringify(examData));
+                    // Por ejemplo, podrias redirigir al usuario a la página del examen
+                    // window.location.href = `exam.html?id=${roomNumber}`;
+                    window.location.href = `examroom.html`;
                 })
                 .catch((error) => console.error('Error:', error));
         });
