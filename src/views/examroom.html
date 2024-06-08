@@ -38,7 +38,7 @@
                     const questionTitle = document.createElement('h3');
                     questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
                     questionDiv.appendChild(questionTitle);
-
+                    CP++;
                     const optionsList = document.createElement('ul');
                     optionsList.classList.add('options');
 
@@ -61,6 +61,27 @@
 
                     questionDiv.appendChild(optionsList);
                     examContainer.appendChild(questionDiv);
+                });
+
+                const submitButton = document.getElementById('submit');
+                submitButton.addEventListener('click', function () {
+                    var puntaje = 0;
+                    examData.botResponse.content.preguntas.forEach((pregunta, index) => {
+                        const radios = document.getElementsByName(`question${index}`);
+                        let respuestaSeleccionada;
+                        radios.forEach(radio => {
+                            if (radio.checked) {
+                                respuestaSeleccionada = radio.value;
+                            }
+                        });
+                        if (respuestaSeleccionada === pregunta.respuesta) {
+                            puntaje += 1;
+                        }
+                    });
+                    var calificacion = (puntaje * 10) / CP;
+                    localStorage.setItem('calificacion', calificacion);
+                    window.location.href = 'calificacion.html';
+                    // alert(`Tu calificación es: ${calificacion}`);
                 });
 
             };
