@@ -12,7 +12,8 @@
 <body>
   <div class="body1">
     <div class="sidebar">
-      <img src="https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/e40b6ea6361a1abe28f32e7910f63b66/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"
+      <img
+        src="https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/e40b6ea6361a1abe28f32e7910f63b66/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"
         alt="Profesor">
       <h4>Profesor</h4>
       <div class="exams-container">
@@ -25,41 +26,80 @@
     <div id="exam-viz"></div>
 
     <script>
-      //global variables
-      let exam;
 
       function displayExam(examData) {
-        const quizContainer = document.getElementById('exam-viz');
-        quizContainer.innerHTML = ''; // Clear previous content
-        const content = examData.botResponse.content;
+        // const quizContainer = document.getElementById('exam-viz');
+        // quizContainer.innerHTML = ''; // Clear previous content
+        // const content = examData.botResponse.content;
 
-        const temaHeader = document.createElement('h2');
-        temaHeader.textContent = `${content.tema}`;
-        quizContainer.appendChild(temaHeader);
+        // const temaHeader = document.createElement('h2');
+        // temaHeader.textContent = `${content.tema}`;
+        // quizContainer.appendChild(temaHeader);
 
-        content.preguntas.forEach((pregunta, index) => {
-          const questionDiv = document.createElement('div');
-          const questionHeader = document.createElement('h3');
-          questionHeader.textContent = `${index + 1}. ${pregunta.enunciado}`;
-          questionDiv.appendChild(questionHeader);
+        // content.preguntas.forEach((pregunta, index) => {
+        //   const questionDiv = document.createElement('div');
+        //   const questionHeader = document.createElement('h3');
+        //   questionHeader.textContent = `${index + 1}. ${pregunta.enunciado}`;
+        //   questionDiv.appendChild(questionHeader);
 
-          pregunta.opciones.forEach(opcion => {
-            const label = document.createElement('label');
-            const input = document.createElement('input');
-            input.type = 'radio';
-            input.name = `question${index}`;
-            input.value = opcion;
-            label.appendChild(input);
-            label.append(opcion);
-            questionDiv.appendChild(label);
+        //   pregunta.opciones.forEach(opcion => {
+        //     const label = document.createElement('label');
+        //     const input = document.createElement('input');
+        //     input.type = 'radio';
+        //     input.name = `question${index}`;
+        //     input.value = opcion;
+        //     label.appendChild(input);
+        //     label.append(opcion);
+        //     questionDiv.appendChild(label);
 
-            const br = document.createElement('br');
-            questionDiv.appendChild(br);
-          });
+        //     const br = document.createElement('br');
+        //     questionDiv.appendChild(br);
+        //   });
 
-          quizContainer.appendChild(questionDiv);
+        //   quizContainer.appendChild(questionDiv);
+        // });
+
+        // Obtener el contenedor del examen
+        const examContainer = document.getElementById('exam-viz');
+
+        // Crear el título del tema
+        const temaTitle = document.createElement('h2');
+        temaTitle.textContent = `Tema: ${examData.botResponse.content.tema}`;
+        examContainer.appendChild(temaTitle);
+
+        // Crear las preguntas y opciones
+        examData.botResponse.content.preguntas.forEach((pregunta, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+
+            const questionTitle = document.createElement('h3');
+            questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
+            questionDiv.appendChild(questionTitle);
+
+            const optionsList = document.createElement('ul');
+            optionsList.classList.add('options');
+
+            pregunta.opciones.forEach(opcion => {
+                const optionItem = document.createElement('li');
+                optionItem.classList.add('option');
+
+                const optionLabel = document.createElement('label');
+                const optionInput = document.createElement('input');
+                optionInput.type = 'radio';
+                optionInput.name = `question${index}`;
+                optionInput.value = opcion;
+
+                optionLabel.appendChild(optionInput);
+                optionLabel.appendChild(document.createTextNode(opcion));
+
+                optionItem.appendChild(optionLabel);
+                optionsList.appendChild(optionItem);
+            });
+
+            questionDiv.appendChild(optionsList);
+            examContainer.appendChild(questionDiv);
         });
-        
+
       };
 
       document.getElementById("new").addEventListener("click", function (e) {
@@ -69,7 +109,7 @@
       let cont = 0;
 
       let examData = localStorage.getItem('jsonData');
-      
+
       window.onload = function () {
         fetch('http://localhost:3000/get-exams')
           .then(response => response.json())
@@ -81,17 +121,23 @@
               button.textContent = `Examen ${cont}`;
               button.id = `btn-exam-${cont}`;
               button.className = 'exam-button';
-              let examObject = JSON.parse(examData); 
-              button.dataset.exam =  examObject; //here we are adding the exam data to the button, examData is a string
               container.appendChild(button);
 
               button.addEventListener("click", function (e) {
                 e.preventDefault();
-                alert(JSON.stringify(exam));
-                alert(typeof exam);
-                displayExam(JSON.parse(exam)); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
+                // let exam2 = JSON.stringify(exam);  //convert exam to string
+                // alert(exam2); //alert the string exam2 is a string
+                // alert(typeof exam2); //alert the type of the string
+                // displayExam(examen2); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
 
+                let exam2 = JSON.stringify(exam);
 
+                const parsedExam = JSON.parse(exam2);
+                const examData = JSON.parse(parsedExam.data);
+
+                displayExam(examData);
+                //obtain the examn container
+                
               });
             });
           })
@@ -102,7 +148,8 @@
         alert("hi");
       }
 
-      
+
+
     </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
