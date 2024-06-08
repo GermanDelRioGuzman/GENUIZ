@@ -27,35 +27,6 @@
     <script>
       //global variables
       let exam;
-      let examenjson = {
-        "botResponse": {
-          "content": {
-            "tema": "Tema 1",
-            "preguntas": [{
-                "enunciado": "¿Cuál es la capital de Francia?",
-                "opciones": ["Madrid", "Paris", "Londres", "Roma"],
-                "respuesta": "Paris"
-              },
-              {
-                "enunciado": "¿Cuál es la capital de España?",
-                "opciones": ["Madrid", "Paris", "Londres", "Roma"],
-                "respuesta": "Madrid"
-              },
-              {
-                "enunciado": "¿Cuál es la capital de Italia?",
-                "opciones": ["Madrid", "Paris", "Londres", "Roma"],
-                "respuesta": "Roma"
-              },
-              {
-                "enunciado": "¿Cuál es la capital de Inglaterra?",
-                "opciones": ["Madrid", "Paris", "Londres", "Roma"],
-                "respuesta": "Londres"
-              }
-            ]
-          }
-        }
-      };
-      
 
       function displayExam(examData) {
         const quizContainer = document.getElementById('exam-viz');
@@ -88,39 +59,12 @@
 
           quizContainer.appendChild(questionDiv);
         });
-
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit';
-        submitButton.id = 'submit';
-        quizContainer.appendChild(submitButton);
-
-        submitButton.addEventListener('click', function () {
-          let puntaje = 0;
-          let CP = 0;
-          content.preguntas.forEach((pregunta, index) => {
-            const radios = document.getElementsByName(`question${index}`);
-            let respuestaSeleccionada;
-            radios.forEach(radio => {
-              if (radio.checked) {
-                respuestaSeleccionada = radio.value;
-              }
-            });
-            if (respuestaSeleccionada === pregunta.respuesta) {
-              puntaje += 1;
-            }
-            CP++;
-          });
-          const calificacion = (puntaje * 10) / CP;
-          localStorage.setItem('calificacion', calificacion);
-          window.location.href = 'calificacion.html';
-        });
+        
       };
 
       document.getElementById("new").addEventListener("click", function (e) {
         window.location.href = "generador.html";
       });
-      //variable to count the exams
-      let cont = 0;
 
       let examData = localStorage.getItem('jsonData');
       
@@ -130,18 +74,21 @@
           .then(exams => {
             const container = document.querySelector('.exams-container');
             exams.forEach(exam => {
-              cont++;
+
               const button = document.createElement('button');
-              button.textContent = `Examen ${cont}`;
-              button.id = `btn-exam-${cont}`;
+              button.textContent = `Examen ${exam.id}`;
+              button.id = `btn-exam-${exam.id}`;
               button.className = 'exam-button';
-              button.dataset.exam =  examData; //here we are adding the exam data to the button
+              let examObject = JSON.parse(examData); //we need to parse the data because always convert to string when do a assignation, so we need to parse to json again.
+              button.dataset.exam =  examObject; //here we are adding the exam data to the button, examData is a string
               container.appendChild(button);
 
               button.addEventListener("click", function (e) {
                 e.preventDefault();
-                alert(JSON.);
-                displayExam(examData);
+                alert(typeof button.dataset.exam);
+                displayExam(JSON.parse(button.dataset.exam)); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
+
+
               });
             });
           })
