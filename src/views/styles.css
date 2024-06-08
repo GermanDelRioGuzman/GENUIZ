@@ -58,6 +58,17 @@ body {
 
 }
 
+.btn-custom-sala {
+    background-color: black;
+    margin-top: 3px;
+    color: white;
+    border-radius: 20px;
+    text-align: center;
+    left: 0;
+    width: 150px;
+    height: 40px;
+}
+
 .next-section {
     background-color: #b3b3b3;
     padding: 50px 20px;
