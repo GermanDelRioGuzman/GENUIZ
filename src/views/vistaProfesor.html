@@ -69,35 +69,35 @@
 
         // Crear las preguntas y opciones
         examData.botResponse.content.preguntas.forEach((pregunta, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.classList.add('question');
+          const questionDiv = document.createElement('div');
+          questionDiv.classList.add('question');
 
-            const questionTitle = document.createElement('h3');
-            questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
-            questionDiv.appendChild(questionTitle);
+          const questionTitle = document.createElement('h3');
+          questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
+          questionDiv.appendChild(questionTitle);
 
-            const optionsList = document.createElement('ul');
-            optionsList.classList.add('options');
+          const optionsList = document.createElement('ul');
+          optionsList.classList.add('options');
 
-            pregunta.opciones.forEach(opcion => {
-                const optionItem = document.createElement('li');
-                optionItem.classList.add('option');
+          pregunta.opciones.forEach(opcion => {
+            const optionItem = document.createElement('li');
+            optionItem.classList.add('option');
 
-                const optionLabel = document.createElement('label');
-                const optionInput = document.createElement('input');
-                optionInput.type = 'radio';
-                optionInput.name = `question${index}`;
-                optionInput.value = opcion;
+            const optionLabel = document.createElement('label');
+            const optionInput = document.createElement('input');
+            optionInput.type = 'radio';
+            optionInput.name = `question${index}`;
+            optionInput.value = opcion;
 
-                optionLabel.appendChild(optionInput);
-                optionLabel.appendChild(document.createTextNode(opcion));
+            optionLabel.appendChild(optionInput);
+            optionLabel.appendChild(document.createTextNode(opcion));
 
-                optionItem.appendChild(optionLabel);
-                optionsList.appendChild(optionItem);
-            });
+            optionItem.appendChild(optionLabel);
+            optionsList.appendChild(optionItem);
+          });
 
-            questionDiv.appendChild(optionsList);
-            examContainer.appendChild(questionDiv);
+          questionDiv.appendChild(optionsList);
+          examContainer.appendChild(questionDiv);
         });
 
       };
@@ -130,14 +130,16 @@
                 // alert(typeof exam2); //alert the type of the string
                 // displayExam(examen2); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
 
-                let exam2 = JSON.stringify(exam);
+                // Borra el contenido anterior del contenedor 'exam-viz'
+                const examVizContainer = document.querySelector('#exam-viz');
+                examVizContainer.innerHTML = '';
 
+                let exam2 = JSON.stringify(exam);
                 const parsedExam = JSON.parse(exam2);
                 const examData = JSON.parse(parsedExam.data);
 
                 displayExam(examData);
-                //obtain the examn container
-                
+
               });
             });
           })
