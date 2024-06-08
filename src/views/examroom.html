@@ -21,60 +21,53 @@
         <script>
             var CP = 0;
             //function to display quiz
-            function renderExamen(data) {
-                const container = document.getElementById('examen-container');
+            function displayExam(examData) {
+                // Obtener el contenedor del examen
+                const examContainer = document.getElementById('quizContainer');
 
-                // Create a title
-                const title = document.createElement('h1');
-                title.textContent = `Examen de ${data.botResponse.content.tema}`;
-                container.appendChild(title);
+                // Crear el título del tema
+                const temaTitle = document.createElement('h2');
+                temaTitle.textContent = `Tema: ${examData.botResponse.content.tema}`;
+                examContainer.appendChild(temaTitle);
 
-                // Iterate through questions
-                data.botResponse.content.preguntas.forEach((pregunta, index) => {
-                    // Create a question container
-                    const questionContainer = document.createElement('div');
-                    questionContainer.classList.add('pregunta-container');
+                // Crear las preguntas y opciones
+                examData.botResponse.content.preguntas.forEach((pregunta, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.classList.add('question');
 
-                    // Create a question statement
-                    const enunciado = document.createElement('p');
-                    enunciado.textContent = `${index + 1}. ${pregunta.enunciado}`;
-                    questionContainer.appendChild(enunciado);
+                    const questionTitle = document.createElement('h3');
+                    questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
+                    questionDiv.appendChild(questionTitle);
 
-                    // Create options
+                    const optionsList = document.createElement('ul');
+                    optionsList.classList.add('options');
+
                     pregunta.opciones.forEach(opcion => {
-                        const label = document.createElement('label');
-                        const input = document.createElement('input');
-                        input.type = 'radio';
-                        input.name = `pregunta-${index}`;
-                        input.value = opcion;
-                        label.appendChild(input);
-                        label.appendChild(document.createTextNode(opcion));
-                        questionContainer.appendChild(label);
-                        questionContainer.appendChild(document.createElement('br'));
+                        const optionItem = document.createElement('li');
+                        optionItem.classList.add('option');
+
+                        const optionLabel = document.createElement('label');
+                        const optionInput = document.createElement('input');
+                        optionInput.type = 'radio';
+                        optionInput.name = `question${index}`;
+                        optionInput.value = opcion;
+
+                        optionLabel.appendChild(optionInput);
+                        optionLabel.appendChild(document.createTextNode(opcion));
+
+                        optionItem.appendChild(optionLabel);
+                        optionsList.appendChild(optionItem);
                     });
 
-                    // Append question container to main container
-                    container.appendChild(questionContainer);
+                    questionDiv.appendChild(optionsList);
+                    examContainer.appendChild(questionDiv);
                 });
 
-                // Create a submit button
-                const submitButton = document.createElement('button');
-                submitButton.textContent = 'Enviar';
-                submitButton.onclick = () => {
-                    // Add your submit logic here
-                    alert('Examen enviado');
-                };
-                container.appendChild(submitButton);
-            }
+            };
 
-
-            const examData = JSON.parse(localStorage.getItem('examData'));  //its an object 
-            alert(JSON.stringify(examData));
-            let exam2 = JSON.stringify(examData);
-            const parsedExam = JSON.parse(exam2);
-            const examData2 = JSON.parse(parsedExam.data);
-            alert(examData2);
-            renderExamen(examData2);
+            const examData = localStorage.getItem('examData');
+            const parsedExam = JSON.parse(examData);
+            displayExam(parsedExam);
 
 
         </script>

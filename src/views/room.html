@@ -31,14 +31,8 @@
             fetch(`http://localhost:3000/get-exam?id=${roomNumber}`)
                 .then(response => response.json())
                 .then(data => {
-                    // Aquí puedes manejar los datos del examen devueltos por el servidor
-                    let exam = JSON.stringify(data);
-                    const parsedExam = JSON.parse(exam);
-                    const examData = JSON.parse(parsedExam.data); 
-
-                    localStorage.setItem('examData', JSON.stringify(examData));
-                    // Por ejemplo, podrias redirigir al usuario a la página del examen
-                    // window.location.href = `exam.html?id=${roomNumber}`;
+                    //her we manae the data to be stored in the local storage
+                    localStorage.setItem('examData', data);
                     window.location.href = `examroom.html`;
                 })
                 .catch((error) => console.error('Error:', error));
