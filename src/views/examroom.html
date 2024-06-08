@@ -19,9 +19,8 @@
         </div>
 
         <script>
-            var CP = 0;
-            //function to display quiz
             function displayExam(examData) {
+                var CP = 0;
                 // Obtener el contenedor del examen
                 const examContainer = document.getElementById('quizContainer');
 
@@ -32,35 +31,35 @@
 
                 // Crear las preguntas y opciones
                 examData.botResponse.content.preguntas.forEach((pregunta, index) => {
-                    const questionDiv = document.createElement('div');
-                    questionDiv.classList.add('question');
+                    // Crear el contenedor de la pregunta
+                    const questionContainer = document.createElement('div');
+                    questionContainer.classList.add('question-container');
+                    examContainer.appendChild(questionContainer);
 
+                    // Crear el enunciado de la pregunta
                     const questionTitle = document.createElement('h3');
-                    questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
-                    questionDiv.appendChild(questionTitle);
+                    questionTitle.textContent = `${index + 1}. ${pregunta.enunciado}`;
+                    questionContainer.appendChild(questionTitle);
                     CP++;
-                    const optionsList = document.createElement('ul');
-                    optionsList.classList.add('options');
+                    // Crear las opciones de la pregunta
+                    pregunta.opciones.forEach((opcion, index) => {
+                        // Crear el contenedor de la opción
+                        const optionContainer = document.createElement('div');
+                        optionContainer.classList.add('option-container');
+                        questionContainer.appendChild(optionContainer);
 
-                    pregunta.opciones.forEach(opcion => {
-                        const optionItem = document.createElement('li');
-                        optionItem.classList.add('option');
-
-                        const optionLabel = document.createElement('label');
+                        // Crear el input de la opción
                         const optionInput = document.createElement('input');
                         optionInput.type = 'radio';
-                        optionInput.name = `question${index}`;
+                        optionInput.name = `question-${index}`;
                         optionInput.value = opcion;
+                        optionContainer.appendChild(optionInput);
 
-                        optionLabel.appendChild(optionInput);
-                        optionLabel.appendChild(document.createTextNode(opcion));
-
-                        optionItem.appendChild(optionLabel);
-                        optionsList.appendChild(optionItem);
+                        // Crear el texto de la opción
+                        const optionText = document.createElement('span');
+                        optionText.textContent = opcion;
+                        optionContainer.appendChild(optionText);
                     });
-
-                    questionDiv.appendChild(optionsList);
-                    examContainer.appendChild(questionDiv);
                 });
 
                 const submitButton = document.getElementById('submit');
@@ -74,7 +73,7 @@
                                 respuestaSeleccionada = radio.value;
                             }
                         });
-                        if (respuestaSeleccionada === pregunta.respuesta) {
+                        if (respuestaSeleccionada === examData.botResponse.content.respuesta) {
                             puntaje += 1;
                         }
                     });
@@ -83,12 +82,13 @@
                     window.location.href = 'calificacion.html';
                     // alert(`Tu calificación es: ${calificacion}`);
                 });
-
             };
 
-            const examData = localStorage.getItem('examData');
-            const parsedExam = JSON.parse(examData);
-            displayExam(parsedExam);
+            const examData = localStorage.getItem('examData'); //its a string and look like a json
+            const data = JSON.parse(examData); //parse the string to a json object
+            const d = JSON.parse(data.data); //parse the string to a json object7
+            displayExam(d);
+
 
 
         </script>

@@ -32,7 +32,8 @@
                 .then(response => response.json())
                 .then(data => {
                     //her we manae the data to be stored in the local storage
-                    localStorage.setItem('examData', data);
+                    const sd = JSON.stringify(data);
+                    localStorage.setItem('examData', sd);
                     window.location.href = `examroom.html`;
                 })
                 .catch((error) => console.error('Error:', error));
