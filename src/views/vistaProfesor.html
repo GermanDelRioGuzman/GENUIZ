@@ -28,37 +28,6 @@
     <script>
 
       function displayExam(examData) {
-        // const quizContainer = document.getElementById('exam-viz');
-        // quizContainer.innerHTML = ''; // Clear previous content
-        // const content = examData.botResponse.content;
-
-        // const temaHeader = document.createElement('h2');
-        // temaHeader.textContent = `${content.tema}`;
-        // quizContainer.appendChild(temaHeader);
-
-        // content.preguntas.forEach((pregunta, index) => {
-        //   const questionDiv = document.createElement('div');
-        //   const questionHeader = document.createElement('h3');
-        //   questionHeader.textContent = `${index + 1}. ${pregunta.enunciado}`;
-        //   questionDiv.appendChild(questionHeader);
-
-        //   pregunta.opciones.forEach(opcion => {
-        //     const label = document.createElement('label');
-        //     const input = document.createElement('input');
-        //     input.type = 'radio';
-        //     input.name = `question${index}`;
-        //     input.value = opcion;
-        //     label.appendChild(input);
-        //     label.append(opcion);
-        //     questionDiv.appendChild(label);
-
-        //     const br = document.createElement('br');
-        //     questionDiv.appendChild(br);
-        //   });
-
-        //   quizContainer.appendChild(questionDiv);
-        // });
-
         // Obtener el contenedor del examen
         const examContainer = document.getElementById('exam-viz');
 
@@ -125,11 +94,6 @@
 
               button.addEventListener("click", function (e) {
                 e.preventDefault();
-                // let exam2 = JSON.stringify(exam);  //convert exam to string
-                // alert(exam2); //alert the string exam2 is a string
-                // alert(typeof exam2); //alert the type of the string
-                // displayExam(examen2); //we need to parse again because always convert to string when do a assignation, so we need to parse to json again.
-
                 // Borra el contenido anterior del contenedor 'exam-viz'
                 const examVizContainer = document.querySelector('#exam-viz');
                 examVizContainer.innerHTML = '';
