@@ -135,12 +135,12 @@
               button.textContent = `Examen ${cont}`;
               button.id = `btn-exam-${cont}`;
               button.className = 'exam-button';
-              button.dataset.exam=  examData; //here we are adding the exam data to the button
+              button.dataset.exam =  examData; //here we are adding the exam data to the button
               container.appendChild(button);
 
               button.addEventListener("click", function (e) {
                 e.preventDefault();
-                alert(examData);
+                alert(JSON.);
                 displayExam(examData);
               });
             });
