@@ -617,4 +617,36 @@ button.finalizar:hover {
     align-items: center;
     margin-top: 10%;
     margin-left: 20%;
+    animation: spin 1s linear infinite;
+}
+
+
+
+/* spinner container */
+.div1 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/*spinner*/
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 9px solid grey;
+    border-top: 9px solid black;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+
+    }
 }
