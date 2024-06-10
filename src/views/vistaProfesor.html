@@ -116,22 +116,25 @@
               });
 
               closeButton.addEventListener("click", function (e) {
-                e.preventDefault();
-                fetch(`http://localhost:3000/delete-exam?id=${exam.id}`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  }
-                })
-                  .then(response => response.json())
-                  .then(data => {
-                    console.log('Success:', data);
-                    window.location.reload();
-                  })
-                  .catch((error) => {
-                    console.error('Error:', error);
-                  });
-              });
+                    e.stopPropagation(); // Para evitar la activación del evento del botón principal
+                    const examId = this.dataset.examId;
+                    console.log(examId);
+                    console.log(`Deleting exam with id: ${examId}`);
+                    fetch(`http://localhost:3000/delete-exam?id=${examId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                });
             });
           })
           .catch((error) => console.error('Error:', error));
