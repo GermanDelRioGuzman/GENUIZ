@@ -1,3 +1,5 @@
+
+
 body {
     background-color: #b3b3b3;
     color: black;
@@ -208,17 +210,17 @@ h1 {
 .login-section {
     background-color: #b3b3b3;
     background-color: #b3b3b3;
-      border: none;
-      border-radius: 20px;
-      margin: 20px auto;
-      padding: 50px 20px;
-      text-align: center;
-      width: 100%;
-      /* El ancho del elemento será el 100% del ancho de su contenedor */
-      max-width: 500px;
-      /* El ancho máximo del elemento será de 500px */
-      min-width: 200px;
-      /* El ancho mínimo del elemento será de 200px */
+    border: none;
+    border-radius: 20px;
+    margin: 20px auto;
+    padding: 50px 20px;
+    text-align: center;
+    width: 100%;
+    /* El ancho del elemento será el 100% del ancho de su contenedor */
+    max-width: 500px;
+    /* El ancho máximo del elemento será de 500px */
+    min-width: 200px;
+    /* El ancho mínimo del elemento será de 200px */
 }
 
 .login-section h2 {
@@ -278,7 +280,7 @@ h1 {
     text-align: center;
 }
 
-.sidebar button{
+.sidebar button {
     display: block;
     padding: 10px;
     text-decoration: none;
@@ -510,6 +512,7 @@ button.finalizar:hover {
     /* Font style */
 }
 
+
 .body1 {
     background-color: #b3b3b3;
     color: black;
@@ -518,7 +521,7 @@ button.finalizar:hover {
     padding: 0;
     display: flex;
     height: 100vh;
-  }
+}
 
 
 /* room.html */
@@ -528,35 +531,73 @@ button.finalizar:hover {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #bfbfbf; /* Light gray background */
-  }
-  
-  .exam-entry {
+    background-color: #bfbfbf;
+    /* Light gray background */
+}
+
+.exam-entry {
     text-align: center;
-  }
-  
-  .title1 {
+}
+
+.title1 {
     font-size: 24px;
     margin-bottom: 20px;
-  }
-  
-  .ri {
+}
+
+.ri {
     padding: 10px;
     border-radius: 20px;
     border: none;
     margin-bottom: 20px;
     width: 200px;
     text-align: center;
-    background-color: #e0e0e0; /* Slightly lighter gray for input field */
-  }
-  
-  .button1 {
+    background-color: #e0e0e0;
+    /* Slightly lighter gray for input field */
+}
+
+.button1 {
     padding: 10px 20px;
     border: none;
     border-radius: 20px;
-    background-color: #000000; /* Black background for button */
-    color: #ffffff; /* White text color */
+    background-color: #000000;
+    /* Black background for button */
+    color: #ffffff;
+    /* White text color */
     font-size: 16px;
     cursor: pointer;
-  }
-  
+}
+
+/* button of the teacher view where can select to preview an exam */
+
+.exam-button {
+    position: relative;
+    padding: 10px 20px;
+    font-size: 24px;
+    border: 2px solid #d3d3d3;
+    border-radius: 25px;
+    background-color: #d3d3d3;
+    color: black;
+    cursor: pointer;
+    outline: none;
+    margin: 10px; /* Añadido para espacio entre botones */
+}
+
+.close-button{
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer; 
+}
+
+.close-button:hover{
+    background-color: darkred;
+}

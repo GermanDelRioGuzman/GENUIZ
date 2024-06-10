@@ -90,6 +90,15 @@
               button.textContent = `Examen ${cont}`;
               button.id = `btn-exam-${cont}`;
               button.className = 'exam-button';
+              
+
+              //create the span for the X right top corner button 
+              const closeButton = document.createElement('span');
+              closeButton.textContent = '✖';
+              closeButton.className ='close-button';
+
+              //add the elements
+              container.appendChild(closeButton);
               container.appendChild(button);
 
               button.addEventListener("click", function (e) {
