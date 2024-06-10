@@ -1,27 +1,21 @@
-require('dotenv').config(); // Asegúrate de que esta línea esté al principio
+// Solo server
+//pruebas con 0auth
 
+require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const PassportLocal = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const path = require('path');
 const mysql = require('mysql');
-const OpenAI = require('openai');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
-const port = 8080; // Puedes cambiar este puerto si es necesario
 
-// Middleware análisis de datos de formularios
+// Middleware para analizar datos de formularios
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('secreto'));
-app.use(cors());
 
 app.use(session({
     secret: 'secreto',
@@ -29,11 +23,15 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Configuración básica passport
+// Configuración básica de passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Conexión a la base de datos MySQL
+// Verifica que las variables de entorno están cargando correctamente
+console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
+
+// Conexión a la base de datos
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -46,55 +44,121 @@ connection.connect((err) => {
         console.error('Error al conectar a la base de datos:', err);
         return;
     }
-    console.log('Conexión exitosa');
+
+    console.log('Conexión exitosa a la base de datos');
 });
 
-// Configuración passport
-passport.use(new PassportLocal(function(username, password, done) {
-    connection.query(`
-        SELECT users.*, role.role_name 
-        FROM users 
-        JOIN role ON users.role_id = role.id 
-        WHERE username = ?`, [username], (err, results) => {
+// Configuración de la estrategia PassportLocal
+passport.use(new PassportLocal(function (username, password, done) {
+    console.log('Autenticando usuario con PassportLocal');
+    const query = 'SELECT users.*, role.role_name FROM users LEFT JOIN role ON users.role_id = role.id WHERE username = ?';
+    connection.query(query, [username], (err, results) => {
         if (err) {
             return done(err);
         }
         if (results.length === 0) {
+            console.log('Usuario no encontrado:', username);
             return done(null, false); // Usuario no encontrado
         }
 
         const user = results[0];
-        if (user.password !== password) {
+        if (password !== user.password) {
+            console.log('Contraseña incorrecta para usuario:', username);
             return done(null, false); // Contraseña incorrecta
         }
-
+        if (user.role_id === null) {
+            console.log('El usuario debe completar su registro:', username);
+            return done(null, false, { message: 'Debe completar su registro.' });
+        }
+        console.log('Autenticación exitosa para usuario:', username);
         return done(null, user); // Autenticación exitosa
     });
 }));
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-    connection.query(`
-        SELECT users.*, role.role_name 
-        FROM users 
-        JOIN role ON users.role_id = role.id 
-        WHERE users.id = ?`, [id], (err, results) => {
+// Configuración google oauth 2.0 para inicio de sesión
+passport.use('google-login', new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:8080/auth/google/callback/login"
+  },
+  function(token, tokenSecret, profile, done) {
+    console.log('Perfil recibido de Google para login:', profile);
+    connection.query('SELECT * FROM users WHERE google_id = ?', [profile.id], (err, results) => {
         if (err) {
             return done(err);
         }
+        if (results.length === 0) {
+            console.log('Usuario no encontrado para login:', profile.id);
+            return done(null, false); // Usuario no encontrado
+        } else {
+            const user = results[0];
+            if (user.role_id === null) {
+                console.log('El usuario debe completar su registro:', profile.id);
+                return done(null, user, { message: 'complete' }); // Usuario debe completar el registro
+            }
+            console.log('Usuario existente para login:', user);
+            return done(null, user);
+        }
+    });
+  }
+));
+
+// Configuración google oauth 2.0 para registro
+passport.use('google-register', new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:8080/auth/google/callback/register"
+  },
+  function(token, tokenSecret, profile, done) {
+    console.log('Perfil recibido de Google para registro:', profile);
+    connection.query('SELECT * FROM users WHERE google_id = ?', [profile.id], (err, results) => {
+        if (err) {
+            return done(err);
+        }
+        if (results.length === 0) {
+            // Si el usuario no existe, crear uno nuevo
+            const query = 'INSERT INTO users (google_id, username, name, role_id) VALUES (?, ?, ?, ?)';
+            connection.query(query, [profile.id, profile.emails[0].value, profile.displayName, null], (err, results) => {
+                if (err) {
+                    return done(err);
+                }
+                const newUser = { id: results.insertId, username: profile.emails[0].value, name: profile.displayName, role_id: null };
+                console.log('Nuevo usuario insertado:', newUser);
+                return done(null, newUser);
+            });
+        } else {
+            console.log('Usuario existente para registro:', results[0]);
+            return done(null, false); // Usuario ya registrado
+        }
+    });
+  }
+));
+
+// Serialización del usuario
+passport.serializeUser(function (user, done) {
+    console.log('Serializando usuario con ID:', user.id);
+    done(null, user.id);
+});
+
+// Deserialización del usuario
+passport.deserializeUser(function (id, done) {
+    console.log('Deserializando usuario con ID:', id);
+    const query = 'SELECT users.*, role.role_name FROM users LEFT JOIN role ON users.role_id = role.id WHERE users.id = ?';
+    connection.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error en la deserialización:', err);
+            return done(err);
+        }
+        if (results.length === 0) {
+            console.error('Usuario no encontrado');
+            return done(new Error('Usuario no encontrado'), null);
+        }
+        console.log('Usuario deserializado:', results[0]);
         done(null, results[0]);
     });
 });
 
-// Configuración OpenAI API
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
-
-// Rutas de autenticación y vistas
+// Rutas
 app.get("/", (req, res) => {
     if (req.isAuthenticated()) {
         const userRole = req.user.role_name;
@@ -114,57 +178,140 @@ app.get("/iniciosesion", (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'iniciosesion.html'));
 });
 
-app.post("/iniciosesion", passport.authenticate('local', {
-    successRedirect: "/", // Redirigir al usuario a la página principal donde se redirige según el rol
-    failureRedirect: "/iniciosesion"
-}));
+// Ruta para el inicio de sesión
+app.post("/iniciosesion", (req, res, next) => {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.redirect('/iniciosesion?error=' + encodeURIComponent(info.message));
+        }
+        req.logIn(user, function(err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/');
+        });
+    })(req, res, next);
+});
 
+// Ruta para la página de registro
 app.get("/registrarme", (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'registrarme.html'));
 });
 
-app.post("/registrarme", (req, res) => {
+// Ruta para el registro de usuario
+app.post("/registrarme", (req, res, next) => {
     const { name, username, password, role } = req.body;
 
     console.log('Datos recibidos del formulario:', req.body);
 
+    // Verifica si el usuario ya existe
     connection.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
         if (err) {
             console.error('Error en la consulta', err);
-            return res.redirect('/registrarme');
+            return res.redirect('/registrarme?error=database');
         }
 
         if (results.length > 0) {
             console.log('El usuario ya existe');
-            return res.redirect('/registrarme');
+            return res.redirect('/registrarme?error=userexists');
         }
 
+        // Obtener el role_id basado en el role_name
         connection.query('SELECT id FROM role WHERE role_name = ?', [role], (err, results) => {
             if (err || results.length === 0) {
                 console.error('Error al obtener el role_id', err);
-                return res.redirect('/registrarme');
+                return res.redirect('/registrarme?error=rolenotfound');
             }
 
             const role_id = results[0].id;
 
             console.log('Role ID:', role_id);
 
+            // Agrega el usuario en la base de datos
             const query = 'INSERT INTO users (name, username, password, role_id) VALUES (?, ?, ?, ?)';
             connection.query(query, [name, username, password, role_id], (err, results) => {
                 if (err) {
                     console.error('Error al registrar usuario', err);
-                    return res.redirect('/registrarme');
+                    return res.redirect('/registrarme?error=insert');
                 }
 
-                console.log('Usuario registrado');
-                res.redirect('/iniciosesion');
+                console.log('Usuario registrado:', { id: results.insertId, username, role_name: role });
+
+                // Autenticar al usuario registrado
+                req.login({ id: results.insertId, username, role_name: role }, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    return res.redirect('/');
+                });
             });
         });
     });
 });
 
+// Ruta para autenticación con Google para login
+app.get('/auth/google/login', passport.authenticate('google-login', { scope: ['profile', 'email'] }));
+
+// Ruta de callback para Google login
+app.get('/auth/google/callback/login', 
+    passport.authenticate('google-login', { failureRedirect: '/iniciosesion?error=complete' }),
+    (req, res) => {
+        if (req.user.role_id === null) {
+            return res.redirect('/completar-registro');
+        }
+        res.redirect('/');
+    }
+);
+
+// Ruta para autenticación con Google para registro
+app.get('/auth/google/register', passport.authenticate('google-register', { scope: ['profile', 'email'] }));
+
+// Ruta de callback para Google registro
+app.get('/auth/google/callback/register', 
+    passport.authenticate('google-register', { failureRedirect: '/registrarme?error=userexists' }),
+    (req, res) => {
+        res.redirect('/completar-registro');
+    }
+);
+
+// Ruta para completar el registro después de la autenticación con Google
+app.get('/completar-registro', (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.redirect('/iniciosesion');
+    }
+    res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'completar-registro.html'));
+});
+
+app.post('/completar-registro', (req, res) => {
+    const { role } = req.body;
+    const userId = req.user.id;
+
+    connection.query('SELECT id FROM role WHERE role_name = ?', [role], (err, results) => {
+        if (err || results.length === 0) {
+            console.error('Error al obtener el role_id', err);
+            return res.redirect('/completar-registro');
+        }
+
+        const role_id = results[0].id;
+
+        connection.query('UPDATE users SET role_id = ? WHERE id = ?', [role_id, userId], (err, results) => {
+            if (err) {
+                console.error('Error al actualizar usuario', err);
+                return res.redirect('/completar-registro');
+            }
+
+            res.redirect('/');
+        });
+    });
+});
+
+// Ruta para servir archivos estáticos
 app.use(express.static(path.join(__dirname, '..', '..', 'src', 'views')));
 
+// Servir archivos HTML de las vistas
 app.get('/vistaEstudiante.html', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'vistaEstudiante.html'));
 });
@@ -173,104 +320,5 @@ app.get('/vistaProfesor.html', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'vistaProfesor.html'));
 });
 
-// Rutas para generar exámenes (OpenAI)
-app.post('/recibir-datos', async (req, res) => {
-    if (!req.body || !req.body.miDato) {  // Si no hay un mensaje en el body
-        return res.status(400).json({ error: "Bad Request or missing request" }); // Devuelvo un error
-    }
-    console.log('Dato recibido:', req.body.miDato);  // Accedemos al dato enviado como JSON
-
-    let miDato = req.body.miDato; // El mensaje que viene del body
-
-    let messages = [{ role: "user", content: miDato }]; // El mensaje que viene del usuario
-
-    try { // Intento hacer una petición a la API de OpenAI
-        const completion = await openai.chat.completions.create({ // Creo una conversación
-            model: "gpt-3.5-turbo", // Modelo
-            messages: messages // Mensajes
-        });
-
-        let botResponse = completion.choices[0].message; // La respuesta del bot
-
-        res.json({ // Devuelvo un JSON con el mensaje
-            botResponse
-        });
-
-        console.log('Respuesta del bot:', botResponse); // Imprimo en consola la respuesta del bot
-
-    } catch (error) { // Si hay un error
-        console.error("Error from openai api", error); // Imprimo en consola
-        res.status(500).json({ error: "Internal Server Error" }) // Devuelvo un error
-    }
-});
-
-// Conexión a la base de datos SQLite
-let db = new sqlite3.Database(path.join(__dirname, '..', '..', 'src', 'my_database.db'), (err) => {
-    if (err) {
-        console.error(err.message);
-    } else {
-        console.log('Connected to the SQLite database.');
-        db.run(`CREATE TABLE IF NOT EXISTS exams(
-                id INTEGER PRIMARY KEY,
-                data TEXT,
-                room INTEGER
-              )`,
-            (err) => {
-                if (err) {
-                    console.error(err.message);
-                } else {
-                    console.log("Exams table created successfully");
-                }
-            });
-    }
-});
-
-// Ruta para guardar exámenes
-app.post('/save-exam', (req, res) => {
-    let examData = req.body.data;
-
-    db.run(`INSERT INTO exams(data) VALUES(?)`, [examData], function (err) {
-        if (err) {
-            console.error(err.message);
-            res.status(500).send(err);
-        } else {
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
-            res.status(200).send({ id: this.lastID });
-        }
-    });
-});
-
-// Ruta para obtener todos los exámenes
-app.get('/get-exams', (req, res) => {
-    db.all(`SELECT * FROM exams`, [], (err, rows) => {
-        if (err) {
-            console.error(err.message);
-            res.status(500).send(err);
-        } else {
-            res.status(200).send(rows);
-        }
-    });
-});
-
-// Ruta para obtener un examen basado en el room
-app.get('/get-exam', (req, res) => {
-    const examId = req.query.id;
-
-    db.get(`SELECT * FROM exams WHERE id = ?`, [examId], (err, row) => {
-        if (err) {
-            console.error(err.message);
-            res.status(500).send(err);
-        } else {
-            if (row) {
-                res.status(200).send(row);
-            } else {
-                res.status(404).send({ message: 'Examen no encontrado' });
-            }
-        }
-    });
-});
-
 // Iniciar servidor
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
+app.listen(8080, () => console.log("Server started"));

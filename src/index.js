@@ -10,7 +10,7 @@ const port = 3000; //creo el puerto
 
 //middelwares
 app.use(cors());    //uso cors
-app.use(express.json()); //uso json
+app.use(express.json()); //para parsear JSON
 app.use(bodyParser.json()); //uso body-parser
 app.use(bodyParser.urlencoded({ extended: true })); //uso body-parser
 
@@ -84,6 +84,7 @@ async function main() {
 
     app.use(express.json()); // Para poder parsear JSON en las solicitudes entrantes
 
+    // Ruta para obtener un examen por ID
     app.get('/get-exams', (req, res) => {
         db.all(`SELECT data FROM exams`, [], (err, rows) => {
             if (err) {

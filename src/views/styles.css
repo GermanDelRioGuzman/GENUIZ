@@ -522,7 +522,6 @@ button.finalizar:hover {
 }
 
 
-/* room.html */
 .room {
     margin: 0;
     display: flex;
@@ -530,7 +529,7 @@ button.finalizar:hover {
     align-items: center;
     height: 100vh;
     background-color: #bfbfbf;
-    /* Light gray background */
+    
 }
 
 .exam-entry {
@@ -550,7 +549,7 @@ button.finalizar:hover {
     width: 200px;
     text-align: center;
     background-color: #e0e0e0;
-    /* Slightly lighter gray for input field */
+    
 }
 
 .button1 {
@@ -558,9 +557,7 @@ button.finalizar:hover {
     border: none;
     border-radius: 20px;
     background-color: #000000;
-    /* Black background for button */
     color: #ffffff;
-    /* White text color */
     font-size: 16px;
     cursor: pointer;
 }
@@ -583,7 +580,6 @@ button.finalizar:hover {
 
 .close-button {
     visibility: hidden;
-    /* to hide */
     position: absolute;
     top: -10px;
     right: -10px;
@@ -649,4 +645,42 @@ button.finalizar:hover {
         transform: rotate(360deg);
 
     }
+}
+
+.error-message { /*error message existing user*/
+    color: #dc3545; 
+    font-size: 1em; 
+    margin-top: 10px; 
+    display: none; /*not visible*/
+    text-align: center; 
+    background-color: #f8d7da; 
+    padding: 10px; 
+    border-radius: 5px; 
+    border: 1px solid #f5c6cb; 
+    max-width: 100%; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 10px; 
+}
+
+.back-arrow { /*para retroceder */
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: black;
+    color: white;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 24px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    z-index: 1000;
+}
+
+.back-arrow:hover {
+    background-color: grey;
+    color: black;
 }
