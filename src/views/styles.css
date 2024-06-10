@@ -665,3 +665,28 @@ button.finalizar:hover {
     background-color: grey;
     color: black;
 }
+
+/* scroll for exam-container in professor view */
+
+.scroll-bg{
+    background: #e0e0e0;
+    width: 400px;
+    margin: 10% auto;
+    padding: 10px 20px;
+    border-radius: 50px;
+}
+
+.scroll-div{
+    width:400px;
+    background: #e0e0e0;
+    height: 300px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.scroll-object{
+   color: black;
+   font-family: cursive;
+   font-size: 19px;
+
+}
