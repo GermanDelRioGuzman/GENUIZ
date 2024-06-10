@@ -572,7 +572,7 @@ button.finalizar:hover {
 .exam-button {
     position: relative;
     padding: 10px 20px;
-    font-size: 24px;
+    font-size: 18px;
     border: 2px solid #d3d3d3;
     border-radius: 25px;
     background-color: #d3d3d3;
@@ -583,11 +583,12 @@ button.finalizar:hover {
 }
 
 .close-button{
+    position: absolute;
     top: -10px;
     right: -10px;
     width: 20px;
     height: 20px;
-    background-color: red;
+    background-color: gray;
     color: white;
     border-radius: 50%;
     display: flex;
@@ -599,5 +600,5 @@ button.finalizar:hover {
 }
 
 .close-button:hover{
-    background-color: darkred;
+    background-color: darkgrey;
 }

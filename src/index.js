@@ -128,6 +128,22 @@ async function main() {
         });
     });
 
+    //endpoint to delete an examn
+    app.delete('/delete-exam', (req, res) => {
+        const examId = req.query.id;
+        const sql = `DELETE FROM exams WHERE id = ?`;
+        console.log(examId,sql);
+        db.run(sql, [examId], function (err) {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send(err);
+            } else {
+                console.log(`Row(s) deleted ${this.changes}`);
+                res.status(200).send({ message: 'Examen eliminado' });
+            }
+        });
+    });
+
     // Ruta para manejar la petición POST
     app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`);

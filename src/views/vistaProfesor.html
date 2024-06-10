@@ -33,7 +33,7 @@
 
         // Crear el título del tema
         const temaTitle = document.createElement('h2');
-        temaTitle.textContent = `Tema: ${examData.botResponse.content.tema}`;
+        temaTitle.textContent = `${examData.botResponse.content.tema}`;
         examContainer.appendChild(temaTitle);
 
         // Crear las preguntas y opciones
@@ -42,7 +42,7 @@
           questionDiv.classList.add('question');
 
           const questionTitle = document.createElement('h3');
-          questionTitle.textContent = `Pregunta ${index + 1}: ${pregunta.enunciado}`;
+          questionTitle.textContent = `${index + 1}-${pregunta.enunciado}`;
           questionDiv.appendChild(questionTitle);
 
           const optionsList = document.createElement('ul');
@@ -98,7 +98,7 @@
               closeButton.className ='close-button';
 
               //add the elements
-              container.appendChild(closeButton);
+              button.appendChild(closeButton);
               container.appendChild(button);
 
               button.addEventListener("click", function (e) {
@@ -113,6 +113,24 @@
 
                 displayExam(examData);
 
+              });
+
+              closeButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                fetch(`http://localhost:3000/delete-exam?id=${exam.id}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log('Success:', data);
+                    window.location.reload();
+                  })
+                  .catch((error) => {
+                    console.error('Error:', error);
+                  });
               });
             });
           })
