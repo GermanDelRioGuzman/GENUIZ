@@ -615,13 +615,23 @@ button.finalizar:hover {
 /* continer exam-viz */
 
 #exam-viz {
-    display: flex;
+    padding: 20px;
     flex-direction: column;
     align-items: center;
-    margin-top: 10%;
-    margin-left: 20%;
     animation: spin 1s linear infinite;
+    /*scroll*/
+
 }
+
+.father-ev {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Asegúrate de que el contenedor padre tenga una altura. */
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
 
 
 
@@ -707,13 +717,6 @@ button.finalizar:hover {
     /* Para Chrome, Safari y Opera */
 }
 
-.scroll-object {
-    color: black;
-    font-family: cursive;
-    font-size: 19px;
-
-}
-
 /* historial button */
 .button-h {
     padding: 10px 20px;
@@ -726,4 +729,7 @@ button.finalizar:hover {
     margin: 10px;
 
 }
+
+
+
 

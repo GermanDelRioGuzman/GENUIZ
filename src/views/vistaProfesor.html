@@ -12,9 +12,7 @@
 <body>
   <div class="body1">
     <div class="sidebar">
-      <img
-        src="https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/e40b6ea6361a1abe28f32e7910f63b66/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg"
-        alt="Profesor">
+      <img src="https://cdn-icons-png.flaticon.com/512/320/320333.png" alt="Profesor">
       <h4>Profesor</h4>
       <button class="button-h" href="#">Historial</button>
 
@@ -31,124 +29,130 @@
     </div>
 
     <!--exam part  -->
-    <div id="exam-viz"></div>
+    <div class="father-ev">
+      <div id="exam-viz"></div>
+    </div>
+    
 
-    <script>
+  </div>
 
-      function displayExam(examData) {
-        // Obtener el contenedor del examen
-        const examContainer = document.getElementById('exam-viz');
 
-        // Crear el título del tema
-        const temaTitle = document.createElement('h2');
-        temaTitle.textContent = `${examData.botResponse.content.tema}`;
-        examContainer.appendChild(temaTitle);
+  <script>
 
-        // Crear las preguntas y opciones
-        examData.botResponse.content.preguntas.forEach((pregunta, index) => {
-          const questionDiv = document.createElement('div');
-          questionDiv.classList.add('question');
+    function displayExam(examData) {
+      // Obtener el contenedor del examen
+      const examContainer = document.getElementById('exam-viz');
 
-          const questionTitle = document.createElement('h3');
-          questionTitle.textContent = `${index + 1}-${pregunta.enunciado}`;
-          questionDiv.appendChild(questionTitle);
+      // Crear el título del tema
+      const temaTitle = document.createElement('h2');
+      temaTitle.textContent = `${examData.botResponse.content.tema}`;
+      examContainer.appendChild(temaTitle);
 
-          const optionsList = document.createElement('ul');
-          optionsList.classList.add('options');
+      // Crear las preguntas y opciones
+      examData.botResponse.content.preguntas.forEach((pregunta, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
 
-          pregunta.opciones.forEach(opcion => {
-            const optionItem = document.createElement('li');
-            optionItem.classList.add('option');
+        const questionTitle = document.createElement('h3');
+        questionTitle.textContent = `${index + 1}-${pregunta.enunciado}`;
+        questionDiv.appendChild(questionTitle);
 
-            const optionLabel = document.createElement('label');
-            const optionInput = document.createElement('input');
-            optionInput.type = 'radio';
-            optionInput.name = `question${index}`;
-            optionInput.value = opcion;
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options');
 
-            optionLabel.appendChild(optionInput);
-            optionLabel.appendChild(document.createTextNode(opcion));
+        pregunta.opciones.forEach(opcion => {
+          const optionItem = document.createElement('li');
+          optionItem.classList.add('option');
 
-            optionItem.appendChild(optionLabel);
-            optionsList.appendChild(optionItem);
-          });
+          const optionLabel = document.createElement('label');
+          const optionInput = document.createElement('input');
+          optionInput.type = 'radio';
+          optionInput.name = `question${index}`;
+          optionInput.value = opcion;
 
-          questionDiv.appendChild(optionsList);
-          examContainer.appendChild(questionDiv);
+          optionLabel.appendChild(optionInput);
+          optionLabel.appendChild(document.createTextNode(opcion));
+
+          optionItem.appendChild(optionLabel);
+          optionsList.appendChild(optionItem);
         });
 
-      };
-
-      document.getElementById("new").addEventListener("click", function (e) {
-        window.location.href = "generador.html";
+        questionDiv.appendChild(optionsList);
+        examContainer.appendChild(questionDiv);
       });
-      //variable to count the exams
-      let cont = 0;
 
-      let examData = localStorage.getItem('jsonData');
+    };
 
-      window.onload = function () {
-        fetch('http://localhost:3000/get-exams')
-          .then(response => response.json())
-          .then(exams => {
-            const container = document.querySelector('.exams-container');
-            exams.forEach(exam => {
-              cont++;
-              const button = document.createElement('button');
-              button.textContent = `Examen ${cont}`;
-              button.id = `btn-exam-${cont}`;
-              button.className = 'exam-button';
+    document.getElementById("new").addEventListener("click", function (e) {
+      window.location.href = "generador.html";
+    });
+    //variable to count the exams
+    let cont = 0;
+
+    let examData = localStorage.getItem('jsonData');
+
+    window.onload = function () {
+      fetch('http://localhost:3000/get-exams')
+        .then(response => response.json())
+        .then(exams => {
+          const container = document.querySelector('.exams-container');
+          exams.forEach(exam => {
+            cont++;
+            const button = document.createElement('button');
+            button.textContent = `Examen ${cont}`;
+            button.id = `btn-exam-${cont}`;
+            button.className = 'exam-button';
 
 
-              //create the span for the X right top corner button 
-              const closeButton = document.createElement('span');
-              closeButton.textContent = '✖';
-              closeButton.className = 'close-button';
+            //create the span for the X right top corner button 
+            const closeButton = document.createElement('span');
+            closeButton.textContent = '✖';
+            closeButton.className = 'close-button';
 
-              //add the elements
-              button.appendChild(closeButton);
-              container.appendChild(button);
+            //add the elements
+            button.appendChild(closeButton);
+            container.appendChild(button);
 
-              button.addEventListener("click", function (e) {
-                e.preventDefault();
-                // Borra el contenido anterior del contenedor 'exam-viz'
-                const examVizContainer = document.querySelector('#exam-viz');
-                examVizContainer.innerHTML = '';
+            button.addEventListener("click", function (e) {
+              e.preventDefault();
+              // Borra el contenido anterior del contenedor 'exam-viz'
+              const examVizContainer = document.querySelector('#exam-viz');
+              examVizContainer.innerHTML = '';
 
-                let exam2 = JSON.stringify(exam);
-                const parsedExam = JSON.parse(exam2);
-                const examData = JSON.parse(parsedExam.data);
+              let exam2 = JSON.stringify(exam);
+              const parsedExam = JSON.parse(exam2);
+              const examData = JSON.parse(parsedExam.data);
 
-                displayExam(examData);
+              displayExam(examData);
 
-              });
-
-              closeButton.addEventListener("click", function (e) {
-                e.stopPropagation(); // Para evitar la activación del evento del botón principal
-                const examId = button.id;
-                const id = examId.split('-')[2];
-                fetch(`http://localhost:3000/delete-exam?id=${id}`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  }
-                })
-                  .then(response => response.json())
-                  .then(data => {
-                    console.log('Success:', data);
-                    window.location.reload();
-                  })
-                  .catch((error) => {
-                    console.error('Error:', error);
-                  });
-              });
             });
-          })
-          .catch((error) => console.error('Error:', error));
-      };
 
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            closeButton.addEventListener("click", function (e) {
+              e.stopPropagation(); // Para evitar la activación del evento del botón principal
+              const examId = button.id;
+              const id = examId.split('-')[2];
+              fetch(`http://localhost:3000/delete-exam?id=${id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              })
+                .then(response => response.json())
+                .then(data => {
+                  console.log('Success:', data);
+                  window.location.reload();
+                })
+                .catch((error) => {
+                  console.error('Error:', error);
+                });
+            });
+          });
+        })
+        .catch((error) => console.error('Error:', error));
+    };
+
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
