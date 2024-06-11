@@ -9,47 +9,7 @@
 
     <!-- Direccionamiento a hoja de estilos -->
     <link rel="stylesheet" href="styles.css">
-    <!-- <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #b3b3b3;
-            /* Light grey background similar to your image */
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .score-container {
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            /* Dark grey color for the text */
-        }
-
-        .grade {
-            width: 100px;
-            /* Diameter of the circle */
-            height: 100px;
-            /* Diameter of the circle */
-            background-color: #000;
-            /* Black background */
-            color: white;
-            /* White text color */
-            border-radius: 50%;
-            /* Rounded circle */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px auto;
-            /* Centering the circle horizontally */
-            font-size: 24px;
-            /* Larger text size for the score */
-        }
-    </style> -->
+    
 </head>
 
 <body>
@@ -59,11 +19,21 @@
             
         </div>
     </div>
+
+    <div class="return">
+        <div class="hdiv">
+          <button class="home btn btn-primary" id="home">Return home</button>
+        </div>
+      </div>
 </body>
 <script>
     const calificacion = localStorage.getItem('calificacion');
     const calificacionRedondeada = Math.round(calificacion);
     const scoreCircle = document.querySelector('.grade');
     scoreCircle.textContent = calificacionRedondeada;
+
+    document.getElementById('home').addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
 </script>
 </html>
