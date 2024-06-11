@@ -15,6 +15,8 @@
   <script>
     document.getElementById('begin').addEventListener('click', function(e) {
       e.preventDefault();
+      var name = document.querySelector('.inputname').value; //to storage the name
+      localStorage.setItem('name', name); //to storage the name
       window.location.href="welcome.html";
     })
   </script>
