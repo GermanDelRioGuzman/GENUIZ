@@ -497,7 +497,110 @@ h2 {
     /* Font style */
 }
 
+.home {
+    background: #333;
+    /* Dark gray background */
+    color: white;
+    /* White text color */
+    border: none;
+    /* No border */
+    border-radius: 20px;
+    /* Rounded corners */
+    padding: 10px 20px;
+    /* Top and bottom padding 10px, left and right padding 20px */
+    font-size: 16px;
+    /* Text size */
+    font-family: Arial, sans-serif;
+    /* Font style */
+}
+
+.generator{
+    background: #333;
+    /* Dark gray background */
+    color: white;
+    /* White text color */
+    border: none;
+    /* No border */
+    border-radius: 20px;
+    /* Rounded corners */
+    padding: 10px 20px;
+    /* Top and bottom padding 10px, left and right padding 20px */
+    font-size: 16px;
+    /* Text size */
+    font-family: Arial, sans-serif;
+    /* Font style */
+}
+/* div return, fixed, situaded bottom of the page */
+.return{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+/* button's div */
+.hdiv{
+    position: fixed;
+    bottom:0;
+    left:5px;
+    margin-bottom: 5px;
+}
+
+.gdiv{
+    position: fixed;
+    bottom:0;
+    right:5px;
+    margin-bottom: 5px;
+}
+
+
 button.finalizar:hover {
+    background: #333;
+    /* Dark gray background */
+    color: white;
+    /* White text color */
+    border: none;
+    /* No border */
+    border-radius: 20px;
+    /* Rounded corners */
+    padding: 10px 20px;
+    /* Top and bottom padding 10px, left and right padding 20px */
+    font-size: 16px;
+    /* Text size */
+    font-family: Arial, sans-serif;
+    /* Font style */
+}
+button.guardar:hover {
+    background: #333;
+    /* Dark gray background */
+    color: white;
+    /* White text color */
+    border: none;
+    /* No border */
+    border-radius: 20px;
+    /* Rounded corners */
+    padding: 10px 20px;
+    /* Top and bottom padding 10px, left and right padding 20px */
+    font-size: 16px;
+    /* Text size */
+    font-family: Arial, sans-serif;
+    /* Font style */
+}
+button.home:hover {
+    background: #333;
+    /* Dark gray background */
+    color: white;
+    /* White text color */
+    border: none;
+    /* No border */
+    border-radius: 20px;
+    /* Rounded corners */
+    padding: 10px 20px;
+    /* Top and bottom padding 10px, left and right padding 20px */
+    font-size: 16px;
+    /* Text size */
+    font-family: Arial, sans-serif;
+    /* Font style */
+}
+button.generator:hover {
     background: #333;
     /* Dark gray background */
     color: white;
