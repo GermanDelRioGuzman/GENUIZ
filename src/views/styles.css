@@ -619,18 +619,15 @@ button.finalizar:hover {
     flex-direction: column;
     align-items: center;
     animation: spin 1s linear infinite;
-    /*scroll*/
-
-}
-
-.father-ev {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Asegúrate de que el contenedor padre tenga una altura. */
+    /* scroll */
     overflow-y: auto;
     scrollbar-width: none;
+    /* margins */
+    margin-left: 20%;
+    margin-right: 20%;
 }
+
+
 
 
 
