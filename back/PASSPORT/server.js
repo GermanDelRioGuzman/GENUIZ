@@ -10,6 +10,7 @@ const PassportLocal = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const path = require('path');
 const mysql = require('mysql');
+const bcrypt = require('bcrypt'); 
 
 const app = express();
 
@@ -49,10 +50,10 @@ connection.connect((err) => {
 });
 
 // Configuración de la estrategia PassportLocal
-passport.use(new PassportLocal(function (username, password, done) {
+passport.use(new PassportLocal(async function (username, password, done) {
     console.log('Autenticando usuario con PassportLocal');
     const query = 'SELECT users.*, role.role_name FROM users LEFT JOIN role ON users.role_id = role.id WHERE username = ?';
-    connection.query(query, [username], (err, results) => {
+    connection.query(query, [username], async (err, results) => {
         if (err) {
             return done(err);
         }
@@ -62,7 +63,8 @@ passport.use(new PassportLocal(function (username, password, done) {
         }
 
         const user = results[0];
-        if (password !== user.password) {
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
             console.log('Contraseña incorrecta para usuario:', username);
             return done(null, false); // Contraseña incorrecta
         }
@@ -103,7 +105,7 @@ passport.use('google-login', new GoogleStrategy({
   }
 ));
 
-// Configuración google oauth 2.0 para registro
+// Configuracin google oauth 2.0 para registro
 passport.use('google-register', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -128,7 +130,7 @@ passport.use('google-register', new GoogleStrategy({
             });
         } else {
             console.log('Usuario existente para registro:', results[0]);
-            return done(null, false); // Usuario ya registrado
+            return done(null, false); // Usuario ya existente
         }
     });
   }
@@ -231,21 +233,28 @@ app.post("/registrarme", (req, res, next) => {
             console.log('Role ID:', role_id);
 
             // Agrega el usuario en la base de datos
-            const query = 'INSERT INTO users (name, username, password, role_id) VALUES (?, ?, ?, ?)';
-            connection.query(query, [name, username, password, role_id], (err, results) => {
+            bcrypt.hash(password, 10, (err, hashedPassword) => {
                 if (err) {
-                    console.error('Error al registrar usuario', err);
-                    return res.redirect('/registrarme?error=insert');
+                    console.error('Error al hashear la contraseña', err);
+                    return res.redirect('/registrarme?error=hash');
                 }
 
-                console.log('Usuario registrado:', { id: results.insertId, username, role_name: role });
-
-                // Autenticar al usuario registrado
-                req.login({ id: results.insertId, username, role_name: role }, (err) => {
+                const query = 'INSERT INTO users (name, username, password, role_id) VALUES (?, ?, ?, ?)';
+                connection.query(query, [name, username, hashedPassword, role_id], (err, results) => {
                     if (err) {
-                        return next(err);
+                        console.error('Error al registrar usuario', err);
+                        return res.redirect('/registrarme?error=insert');
                     }
-                    return res.redirect('/');
+
+                    console.log('Usuario registrado:', { id: results.insertId, username, role_name: role });
+
+                    // Autenticar al usuario registrado
+                    req.login({ id: results.insertId, username, role_name: role }, (err) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        return res.redirect('/');
+                    });
                 });
             });
         });
@@ -277,7 +286,7 @@ app.get('/auth/google/callback/register',
     }
 );
 
-// Ruta para completar el registro después de la autenticación con Google
+// Ruta para completar el registro si el usuario no la ha completado (con google)
 app.get('/completar-registro', (req, res) => {
     if (!req.isAuthenticated()) {
         return res.redirect('/iniciosesion');
@@ -318,6 +327,17 @@ app.get('/vistaEstudiante.html', (req, res) => {
 
 app.get('/vistaProfesor.html', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'src', 'views', 'vistaProfesor.html'));
+});
+
+// Ruta de logout
+app.get('/logout', (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.redirect('/?error=logout');
+        }
+        res.redirect('/iniciosesion');
+    });
 });
 
 // Iniciar servidor
