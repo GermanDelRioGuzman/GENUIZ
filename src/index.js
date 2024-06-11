@@ -22,7 +22,6 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 })
 
-
 //función asincrona 
 async function main() {
     // Servir archivos estáticos desde la carpeta public
@@ -69,7 +68,7 @@ async function main() {
         } else {
             console.log('Connected to the database.');
             db.run(`CREATE TABLE IF NOT EXISTS exams(
-                    id INTEGER PRIMARY KEY,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     data TEXT
                   )`,
                 (err) => {
@@ -133,14 +132,37 @@ async function main() {
     app.delete('/delete-exam', (req, res) => {
         const examId = req.query.id;
         const sql = `DELETE FROM exams WHERE id = ?`;
-        console.log(examId,sql);
+        console.log(examId, sql);
         db.run(sql, [examId], function (err) {
             if (err) {
                 console.error(err.message);
                 res.status(500).send(err);
             } else {
                 console.log(`Row(s) deleted ${this.changes}`);
-                res.status(200).send({ message: 'Examen eliminado' });
+                // Después de eliminar la fila, reordena los ID de las filas restantes
+                const updateSql = `
+                    UPDATE exams
+                    SET id = id - 1
+                    WHERE id > ?
+                `;
+                db.run(updateSql, [examId], function (err) {
+                    if (err) {
+                        console.error(err.message);
+                        res.status(500).send(err);
+                    } else {
+                        console.log(`Row(s) updated ${this.changes}`);
+                        // Después de actualizar los ID, vuelve a cargar los datos de la base de datos
+                        db.all('SELECT * FROM exams', (err, rows) => {
+                            if (err) {
+                                console.error(err.message);
+                                res.status(500).send(err);
+                            } else {
+                                // Envía los datos actualizados a la interfaz de usuario
+                                res.status(200).send(rows);
+                            }
+                        });
+                    }
+                });
             }
         });
     });
@@ -153,4 +175,3 @@ async function main() {
 }
 
 main() //llamo a la función main
-

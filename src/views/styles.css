@@ -7,6 +7,10 @@ body {
     display: flex;
     flex-direction: column;
 }
+/*scroll-bar settings, to hidde it*/
+body::-webkit-scrollbar {
+    width: 10px;
+}
 
 .navbar {
     background-color: #b3b3b3;
@@ -722,3 +726,4 @@ button.finalizar:hover {
     margin: 10px;
 
 }
+
