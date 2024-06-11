@@ -915,5 +915,19 @@ button.generator:hover {
     background-color: #333;
   }
 
+/*style for delete question button*/
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 10px;
+  }
   
+  .delete-button:hover {
+    background-color: #dc3545;
+  }  
 
