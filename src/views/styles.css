@@ -584,7 +584,7 @@ button.finalizar:hover {
     /* Evita que el texto dentro del span se rompa en líneas */
     visibility: hidden;
     position: absolute;
-    top: -20px;
+    top: -10px;
     right: -10px;
     width: 20px;
     height: 20px;
@@ -675,7 +675,6 @@ button.finalizar:hover {
 /* scroll for exam-container in professor view */
 
 .scroll-padre {
-
     height: 200vh;
 }
 
@@ -715,10 +714,11 @@ button.finalizar:hover {
 .button-h {
     padding: 10px 20px;
     border: none;
-    border-radius: 20px;
-    background-color: #e0e0e0;
-    color: #e0e0e0;
+    border-radius: 40px;
+    background-color: #cacaca;
+    color: #cacaca;
     font-size: 16px;
     cursor: pointer;
     margin: 10px;
+
 }
