@@ -830,6 +830,70 @@ button.generator:hover {
 
 }
 
+/* enter your name, interface */
 
-
+.bodyname {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #bfbfbf;
+    font-family: Arial, sans-serif;
+  }
+  
+  .containername {
+    text-align: center;
+  }
+  
+  .h1name {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #000;
+  }
+  
+  .inputname[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+  }
+  
+  .buttonname {
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .buttonname:hover {
+    background-color: #333;
+  }
+  
+/*welcome interface*/
+.welcome {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #bfbfbf;
+    font-family: Arial, sans-serif;
+  }
+  
+  .welcome-container {
+    text-align: center;
+  }
+  
+  #welcome-message {
+    font-size: 2rem;
+    color: #000;
+  }
 
