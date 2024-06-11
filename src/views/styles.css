@@ -529,7 +529,7 @@ button.finalizar:hover {
     align-items: center;
     height: 100vh;
     background-color: #bfbfbf;
-    
+
 }
 
 .exam-entry {
@@ -549,7 +549,7 @@ button.finalizar:hover {
     width: 200px;
     text-align: center;
     background-color: #e0e0e0;
-    
+
 }
 
 .button1 {
@@ -565,7 +565,7 @@ button.finalizar:hover {
 /* button of the teacher view where can select to preview an exam */
 
 .exam-button {
-    width:10px; 
+    width: 10px;
     position: relative;
     padding: 10px 20px;
     font-size: 18px;
@@ -580,9 +580,11 @@ button.finalizar:hover {
 }
 
 .close-button {
+    white-space: nowrap;
+    /* Evita que el texto dentro del span se rompa en líneas */
     visibility: hidden;
     position: absolute;
-    top: -10px;
+    top: -20px;
     right: -10px;
     width: 20px;
     height: 20px;
@@ -629,22 +631,25 @@ button.finalizar:hover {
 
 
 
-.error-message { /*error message existing user*/
-    color: #dc3545; 
-    font-size: 1em; 
-    margin-top: 10px; 
-    display: none; /*not visible*/
-    text-align: center; 
-    background-color: #f8d7da; 
-    padding: 10px; 
-    border-radius: 5px; 
-    border: 1px solid #f5c6cb; 
-    max-width: 100%; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    margin-bottom: 10px; 
+.error-message {
+    /*error message existing user*/
+    color: #dc3545;
+    font-size: 1em;
+    margin-top: 10px;
+    display: none;
+    /*not visible*/
+    text-align: center;
+    background-color: #f8d7da;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #f5c6cb;
+    max-width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
 }
 
-.back-arrow { /*para retroceder */
+.back-arrow {
+    /*para retroceder */
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -669,11 +674,12 @@ button.finalizar:hover {
 
 /* scroll for exam-container in professor view */
 
-.scroll-padre{
+.scroll-padre {
+
     height: 200vh;
 }
 
-.scroll-bg{
+.scroll-bg {
     background: #e0e0e0;
     padding: 10px 20px;
     width: 100%;
@@ -681,29 +687,32 @@ button.finalizar:hover {
     overflow: auto;
 }
 
-.scroll-div > *{
+.scroll-div>* {
     width: 100%;
     background: #e0e0e0;
     height: 600px;
-    overflow: hidden;
+    overflow: auto;
     overflow-y: scroll;
-    scrollbar-width: none; /* Para Firefox */
-    -ms-overflow-style: none;  /* Para Internet Explorer y Edge */
+    scrollbar-width: none;
+    /* Para Firefox */
+    -ms-overflow-style: none;
+    /* Para Internet Explorer y Edge */
 }
 
-.scroll-div > *::-webkit-scrollbar {
-    display: none; /* Para Chrome, Safari y Opera */
+.scroll-div>*::-webkit-scrollbar {
+    display: none;
+    /* Para Chrome, Safari y Opera */
 }
 
-.scroll-object{
-   color: black;
-   font-family: cursive;
-   font-size: 19px;
+.scroll-object {
+    color: black;
+    font-family: cursive;
+    font-size: 19px;
 
 }
 
 /* historial button */
-.button-h{
+.button-h {
     padding: 10px 20px;
     border: none;
     border-radius: 20px;
