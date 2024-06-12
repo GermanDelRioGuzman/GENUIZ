@@ -25,7 +25,7 @@ const openai = new OpenAI({
 //función asincrona 
 async function main() {
     // Servir archivos estáticos desde la carpeta public
-    app.use(express.static('views'));
+    app.use(express.static((path.join(__dirname, '../views'))));
     app.use(express.json()); //uso json
 
     // Ruta para manejar la petición POST
@@ -62,7 +62,7 @@ async function main() {
     });
 
     const sqlite3 = require('sqlite3').verbose();
-    let db = new sqlite3.Database('./my_database.db', (err) => {
+    let db = new sqlite3.Database(path.join(__dirname, '../model/my_database.db'), (err) => {
         if (err) {
             console.error(err.message);
         } else {
