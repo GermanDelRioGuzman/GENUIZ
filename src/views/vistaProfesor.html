@@ -235,7 +235,7 @@
       background: none;
       border: none;
       cursor: pointer;
-      color: #007bff;
+      color: #f0f5fa;
       margin-top: auto;
       margin-bottom: 20px;
     }
@@ -434,7 +434,7 @@
             tableHeader.appendChild(headerRow);
             table.appendChild(tableHeader);
 
-            // Cuerpo de la tabla
+            // Cuerpo tabla
             const tableBody = document.createElement('tbody');
             results.forEach(result => {
               const row = document.createElement('tr');
@@ -445,7 +445,7 @@
               const scoreCell = document.createElement('td');
               scoreCell.textContent = result.score;
               const timestampCell = document.createElement('td');
-              timestampCell.textContent = new Date(result.timestamp).toLocaleString(); // Formatear fecha
+              timestampCell.textContent = new Date(result.timestamp).toLocaleString(); // Formatea la fecha
 
               row.appendChild(usernameCell);
               row.appendChild(nameCell);
