@@ -29,6 +29,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//middleware to invalid cache
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.setHeader('Expires', '-1');
+    res.setHeader('Pragma', 'no-cache');
+    next();
+});
+
 console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
 console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
 
@@ -317,9 +325,16 @@ app.get('/logout', (req, res) => {
         if (err) {
             return res.redirect('/?error=logout');
         }
-        res.redirect('/iniciosesion');
+        req.session.destroy((err) => {
+            if (err) {
+                return res.redirect('/?error=logout');
+            }
+            res.clearCookie('connect.sid');
+            res.redirect('/iniciosesion');
+        });
     });
 });
+
 
 app.use(express.static(path.join(__dirname, 'src', 'views')));
 
