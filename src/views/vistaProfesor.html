@@ -44,12 +44,19 @@
       margin-bottom: 20px;
       text-align: center;
     }
+
+    .info-text {
+      color: #d1d1d1;
+      font-size: 18px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
     
     .button-h, .btn-new-exam, .result-button {
       margin-top: 10px;
       width: 100%;
       padding: 10px;
-      background-color: #007bff;
+      background-color: #6c757d;
       color: white;
       border: none;
       text-align: center;
@@ -59,7 +66,7 @@
     }
     
     .button-h:hover, .btn-new-exam:hover, .result-button:hover {
-      background-color: #0056b3;
+      background-color: #5a6268;
     }
     
     .scroll-padre {
@@ -248,7 +255,7 @@
     <div class="sidebar">
       <img src="https://cdn-icons-png.flaticon.com/512/320/320333.png" alt="Profesor">
       <h4 id="profesor-name">Profesor</h4>
-      <button class="button-h" href="#">Historial</button>
+      <div class="info-text">Historial</div>
       <div class="scroll-padre">
         <div class="scroll-bg">
           <div class="scroll-div">
@@ -406,10 +413,16 @@
             const table = document.createElement('table');
             table.classList.add('results-table', 'table', 'table-striped');
 
+            // Título para la tabla de resultados
+            const tableTitle = document.createElement('caption');
+            tableTitle.textContent = 'Resultados';
+            tableTitle.classList.add('table-title');
+            table.appendChild(tableTitle);
+
             // Encabezados de la tabla
             const tableHeader = document.createElement('thead');
             const headerRow = document.createElement('tr');
-            const headers = ['Usuario', 'Calificación', 'Fecha y Hora'];
+            const headers = ['Usuario', 'Nombre', 'Calificación', 'Fecha y Hora'];
 
             headers.forEach(headerText => {
               const header = document.createElement('th');
@@ -427,12 +440,15 @@
               const row = document.createElement('tr');
               const usernameCell = document.createElement('td');
               usernameCell.textContent = result.username;
+              const nameCell = document.createElement('td');
+              nameCell.textContent = result.name; // Suponiendo que el nombre viene del servidor
               const scoreCell = document.createElement('td');
               scoreCell.textContent = result.score;
               const timestampCell = document.createElement('td');
               timestampCell.textContent = new Date(result.timestamp).toLocaleString(); // Formatear fecha
 
               row.appendChild(usernameCell);
+              row.appendChild(nameCell);
               row.appendChild(scoreCell);
               row.appendChild(timestampCell);
               tableBody.appendChild(row);
