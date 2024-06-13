@@ -6,6 +6,116 @@
   <title>Exámenes del Profesor - Genuiz</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <style>
+    .body1 {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #f8f9fa;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sidebar img {
+      width: 100px;
+      border-radius: 50%;
+    }
+
+    .sidebar h4 {
+      margin-top: 10px;
+    }
+
+    .button-h, .btn-new-exam, .result-button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .button-h:hover, .btn-new-exam:hover, .result-button:hover {
+      background-color: #0056b3;
+    }
+
+    .scroll-padre {
+      flex: 1;
+      overflow-y: auto;
+      width: 100%;
+    }
+
+    .scroll-bg {
+      padding: 20px;
+    }
+
+    .scroll-div {
+      width: 100%;
+    }
+
+    .exams-container, .results-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .exam-button, .result-button {
+      background-color: #e9ecef;
+      border: 1px solid #ced4da;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .exam-button:hover, .result-button:hover {
+      background-color: #dee2e6;
+    }
+
+    #exam-viz, #result-viz {
+      flex: 3;
+      padding: 20px;
+    }
+
+    .active-exam, .active-result {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .correct-answer {
+      color: green;
+      font-weight: bold;
+    }
+
+    .results-container {
+      margin-top: 20px;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .results-table th, .results-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .results-table th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
   <div class="body1">
@@ -26,6 +136,8 @@
     </div>
     <!-- Exam part  -->
     <div id="exam-viz"></div>
+    <!-- Result part -->
+    <div id="result-viz"></div>
   </div>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
@@ -114,13 +226,67 @@
       // Crear botón para eliminar el examen
       const deleteButton = document.createElement('button');
       deleteButton.textContent = 'Eliminar Examen';
-      deleteButton.className = 'delete-button';
-      deleteButton.addEventListener('click', function() {
+      deleteButton.className = 'delete-button btn btn-danger';
+      deleteButton.addEventListener('click', function () {
         if (confirm('¿Estás seguro de que deseas eliminar este examen?')) {
           deleteExam(examData.id, examButton); // Llamar a la función deleteExam con el id del examen y el botón como parámetros
         }
       });
       examContainer.appendChild(deleteButton);
+
+      // Crear botón para ver los resultados
+      const resultsButton = document.createElement('button');
+      resultsButton.textContent = 'Ver Resultados';
+      resultsButton.className = 'results-button btn btn-primary';
+      resultsButton.addEventListener('click', function () {
+        fetch(`/get-exam-results?examId=${examData.id}`)
+          .then(response => response.json())
+          .then(results => {
+            const resultContainer = document.getElementById('result-viz');
+            resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar nuevos resultados
+
+            // Crear tabla para los resultados
+            const table = document.createElement('table');
+            table.classList.add('results-table', 'table', 'table-striped');
+
+            // Encabezados de la tabla
+            const tableHeader = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            const headers = ['Usuario', 'Calificación', 'Fecha y Hora'];
+
+            headers.forEach(headerText => {
+              const header = document.createElement('th');
+              header.textContent = headerText;
+              header.setAttribute('scope', 'col');
+              headerRow.appendChild(header);
+            });
+
+            tableHeader.appendChild(headerRow);
+            table.appendChild(tableHeader);
+
+            // Cuerpo de la tabla
+            const tableBody = document.createElement('tbody');
+            results.forEach(result => {
+              const row = document.createElement('tr');
+              const usernameCell = document.createElement('td');
+              usernameCell.textContent = result.username;
+              const scoreCell = document.createElement('td');
+              scoreCell.textContent = result.score;
+              const timestampCell = document.createElement('td');
+              timestampCell.textContent = new Date(result.timestamp).toLocaleString(); // Formatear fecha
+
+              row.appendChild(usernameCell);
+              row.appendChild(scoreCell);
+              row.appendChild(timestampCell);
+              tableBody.appendChild(row);
+            });
+
+            table.appendChild(tableBody);
+            resultContainer.appendChild(table);
+          })
+          .catch(error => console.error('Error al obtener los resultados:', error));
+      });
+      examContainer.appendChild(resultsButton);
 
       // Agregar la clase active-exam al botón del examen actual
       const activeButton = document.querySelector('.exam-button.active-exam');

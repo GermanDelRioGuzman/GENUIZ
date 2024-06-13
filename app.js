@@ -87,6 +87,8 @@ passport.use(new PassportLocal(async function (username, password, done) {
     });
 }));
 
+//login with Google
+
 passport.use('google-login', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -108,6 +110,8 @@ function(token, tokenSecret, profile, done) {
         }
     });
 }));
+
+//register with Google
 
 passport.use('google-register', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -178,6 +182,7 @@ app.get("/", ensureAuthenticated, (req, res) => {
     }
 });
 
+//login 
 app.get("/iniciosesion", (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'iniciosesion.html'));
 });
@@ -198,6 +203,8 @@ app.post("/iniciosesion", (req, res, next) => {
         });
     })(req, res, next);
 });
+
+//register
 
 app.get("/registrarme", (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'registrarme.html'));
@@ -245,6 +252,7 @@ app.post("/registrarme", (req, res, next) => {
     });
 });
 
+//google
 app.get('/auth/google/login', passport.authenticate('google-login', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback/login', 
@@ -303,6 +311,7 @@ app.get('/generador.html', ensureAuthenticated, ensureRole('teacher'), (req, res
     res.sendFile(path.join(__dirname, 'src', 'views', 'generador.html'));
 });
 
+// logout
 app.get('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {
@@ -435,4 +444,49 @@ app.delete('/delete-exam', ensureAuthenticated, ensureRole('teacher'), (req, res
     });
 });
 
+//PRUEBAS EXAMEN
+// Ruta para obtener un examen por código
+app.get('/get-exam-by-code', ensureAuthenticated, ensureRole('student'), (req, res) => {
+    const examCode = req.query.code;
+    connection.query('SELECT * FROM exams_json WHERE exam_code = ?', [examCode], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el examen:', err);
+            return res.status(500).json({ error: 'Error al obtener el examen' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Examen no encontrado' });
+        }
+        res.json(results[0]);
+    });
+});
+
+// Ruta para guardar el resultado del examen
+app.post('/save-exam-result', ensureAuthenticated, ensureRole('student'), (req, res) => {
+    const { examId, finalScore } = req.body;
+    const userId = req.user.id;
+
+    const query = 'INSERT INTO exam_results (user_id, exam_id, score) VALUES (?, ?, ?)';
+    connection.query(query, [userId, examId, finalScore], (err, results) => {
+        if (err) {
+            console.error('Error al guardar el resultado del examen:', err);
+            return res.status(500).json({ error: 'Error al guardar el resultado del examen' });
+        }
+        res.json({ message: 'Resultado guardado correctamente' });
+    });
+});
+
+// Modifica la ruta de vistaProfesor.html para mostrar los resultados
+app.get('/get-exam-results', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
+    const examId = req.query.examId;
+    const query = 'SELECT er.*, u.username, er.timestamp FROM exam_results er JOIN users u ON er.user_id = u.id WHERE er.exam_id = ?';
+    connection.query(query, [examId], (err, results) => {
+        if (err) {
+            console.error('Error al obtener los resultados:', err);
+            return res.status(500).json({ error: 'Error al obtener los resultados' });
+        }
+        res.json(results);
+    });
+});
+
+//
 app.listen(8080, () => console.log("Server started on http://localhost:8080"));
