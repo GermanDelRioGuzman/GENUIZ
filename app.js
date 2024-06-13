@@ -503,5 +503,25 @@ app.get('/get-exam-results', ensureAuthenticated, ensureRole('teacher'), (req, r
     });
 });
 
+//Prueba
+//Para ver los datos del profe:
+app.get('/get-profesor-info', ensureAuthenticated, (req, res) => {
+    const userId = req.user.id;
+    const query = 'SELECT name, username FROM users WHERE id = ?';
+    
+    connection.query(query, [userId], (err, results) => {
+      if (err) {
+        console.error('Error al obtener la información del profesor:', err);
+        return res.status(500).json({ error: 'Error al obtener la información del profesor' });
+      }
+      if (results.length > 0) {
+        res.json(results[0]);
+      } else {
+        res.status(404).json({ error: 'Profesor no encontrado' });
+      }
+    });
+  });
+  
+
 //
 app.listen(8080, () => console.log("Server started on http://localhost:8080"));
