@@ -1,177 +1,156 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Examen 1 - Genuiz</title>
+  <title>Exámenes del Profesor - Genuiz</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
-
 <body>
   <div class="body1">
     <div class="sidebar">
       <img src="https://cdn-icons-png.flaticon.com/512/320/320333.png" alt="Profesor">
       <h4>Profesor</h4>
       <button class="button-h" href="#">Historial</button>
-
       <div class="scroll-padre">
-        <div class=scroll-bg>
+        <div class="scroll-bg">
           <div class="scroll-div">
             <div class="exams-container">
+              <!-- Aquí se mostrarán los exámenes -->
             </div>
           </div>
         </div>
       </div>
-
       <button href="#" id="new" class="btn-new-exam">Nuevo examen</button>
     </div>
-
-    <!--exam part  -->
-
+    <!-- Exam part  -->
     <div id="exam-viz"></div>
-
-
-
   </div>
-
-
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-
-    function displayExam(examData) {
-      // Obtener el contenedor del examen
-      const examContainer = document.getElementById('exam-viz');
-
-      // Crear el título del tema
-      const temaTitle = document.createElement('h2');
-      temaTitle.textContent = `${examData.botResponse.content.tema}`;
-      examContainer.appendChild(temaTitle);
-
-      // Crear las preguntas y opciones
-      examData.botResponse.content.preguntas.forEach((pregunta, index) => {
-        const questionDiv = document.createElement('div');
-        questionDiv.classList.add('question');
-
-        const questionTitle = document.createElement('h3');
-        questionTitle.textContent = `${index + 1}-${pregunta.enunciado}`;
-        questionDiv.appendChild(questionTitle);
-
-        const optionsList = document.createElement('ul');
-        optionsList.classList.add('options');
-
-        pregunta.opciones.forEach(opcion => {
-          const optionItem = document.createElement('li');
-          optionItem.classList.add('option');
-
-          const optionLabel = document.createElement('label');
-          const optionInput = document.createElement('input');
-          optionInput.type = 'radio';
-          optionInput.name = `question${index}`;
-          optionInput.value = opcion;
-
-          if (pregunta.respuesta === opcion) {
-            optionLabel.style.color = 'green';
-          }
-
-          optionLabel.appendChild(optionInput);
-          optionLabel.appendChild(document.createTextNode(opcion));
-
-          optionItem.appendChild(optionLabel);
-          optionsList.appendChild(optionItem);
-
-
-        });
-
-        questionDiv.appendChild(optionsList);
-        examContainer.appendChild(questionDiv);
-
-        //creating the button for delete a question
-        const deletebutton = document.createElement('button');
-        deletebutton.classList.add('delete-button');
-        deletebutton.textContent = 'Eliminar';
-
-        deletebutton.addEventListener('click', function (e) {
-          e.preventDefault();
-          deleteQuestion(examData, index, questionDiv);
-        });
-
-        questionDiv.appendChild(deletebutton);
-      });
-
-    };
-
-
     document.getElementById("new").addEventListener("click", function (e) {
       window.location.href = "generador.html";
     });
-    //variable to count the exams
-    let cont = 0;
-
-    let examData = localStorage.getItem('jsonData');
 
     window.onload = function () {
-      fetch('http://localhost:3000/get-exams')
+      fetch('/get-exams-json') // Hacer una solicitud al servidor para obtener los exámenes del profesor
         .then(response => response.json())
         .then(exams => {
           const container = document.querySelector('.exams-container');
           exams.forEach(exam => {
-            cont++;
             const button = document.createElement('button');
-            button.textContent = `Examen ${cont}`;
-            button.id = `btn-exam-${cont}`;
+            button.textContent = exam.title;
             button.className = 'exam-button';
 
-
-            //create the span for the X right top corner button 
-            const closeButton = document.createElement('span');
-            closeButton.textContent = '✖';
-            closeButton.className = 'close-button';
-
-            //add the elements
-            button.appendChild(closeButton);
-            container.appendChild(button);
-
+            // Al hacer clic en un examen, mostrar su contenido
             button.addEventListener("click", function (e) {
               e.preventDefault();
-              // Borra el contenido anterior del contenedor 'exam-viz'
-              const examVizContainer = document.querySelector('#exam-viz');
-              examVizContainer.innerHTML = '';
-
-              let exam2 = JSON.stringify(exam);
-              const parsedExam = JSON.parse(exam2);
-              const examData = JSON.parse(parsedExam.data);
-
-              displayExam(examData);
-
+              displayExam(exam, button);
             });
 
-            closeButton.addEventListener("click", function (e) {
-              e.stopPropagation(); // Para evitar la activación del evento del botón principal
-              const examId = button.id;
-              const id = examId.split('-')[2];
-              fetch(`http://localhost:3000/delete-exam?id=${id}`, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json',
-                }
-              })
-                .then(response => response.json())
-                .then(data => {
-                  console.log('Success:', data);
-                  window.location.reload();
-                })
-                .catch((error) => {
-                  console.error('Error:', error);
-                });
-            });
+            container.appendChild(button);
           });
         })
         .catch((error) => console.error('Error:', error));
     };
 
-  </script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+    function displayExam(examData, examButton) {
+      const examContainer = document.getElementById('exam-viz');
+      examContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo examen
 
+      // Crear el título del examen
+      const examTitle = document.createElement('h2');
+      examTitle.textContent = `Detalles del Examen: ${examData.title}`;
+      examContainer.appendChild(examTitle);
+
+      // Crear el subtítulo del tema
+      const topicSubtitle = document.createElement('h3');
+      topicSubtitle.textContent = `Tema: ${examData.topic}`;
+      examContainer.appendChild(topicSubtitle);
+
+      // Crear el código del examen
+      const examCodePara = document.createElement('p');
+      examCodePara.textContent = `Código del Examen: ${examData.exam_code}`;
+      examContainer.appendChild(examCodePara);
+
+      // Parsear el exam_data para mostrarlo como JSON
+      const examDataObj = JSON.parse(examData.exam_data);
+
+      // Crear un elemento para mostrar las preguntas y opciones
+      const examQuestionsList = document.createElement('div');
+      examDataObj.preguntas.forEach((pregunta, index) => {
+        const questionItem = document.createElement('div');
+        questionItem.classList.add('question-item');
+        const questionText = document.createElement('p');
+        questionText.textContent = `${index + 1}. ${pregunta.enunciado}`;
+
+        // Crear una lista para las opciones
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options-list'); // Agregar clase para estilizar las opciones
+
+        // Recorrer las opciones
+        pregunta.opciones.forEach(opcion => {
+          const optionItem = document.createElement('li');
+          optionItem.textContent = opcion;
+
+          // Si la opción es la respuesta correcta, agregar la clase 'correct-answer'
+          if (opcion === pregunta.respuesta) {
+            optionItem.classList.add('correct-answer');
+          }
+
+          optionsList.appendChild(optionItem);
+        });
+
+        // Agregar el texto de la pregunta y las opciones a la lista de preguntas
+        questionItem.appendChild(questionText);
+        questionItem.appendChild(optionsList);
+        examQuestionsList.appendChild(questionItem);
+      });
+
+      // Agregar la lista de preguntas al contenedor del examen
+      examContainer.appendChild(examQuestionsList);
+
+      // Crear botón para eliminar el examen
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Eliminar Examen';
+      deleteButton.className = 'delete-button';
+      deleteButton.addEventListener('click', function() {
+        if (confirm('¿Estás seguro de que deseas eliminar este examen?')) {
+          deleteExam(examData.id, examButton); // Llamar a la función deleteExam con el id del examen y el botón como parámetros
+        }
+      });
+      examContainer.appendChild(deleteButton);
+
+      // Agregar la clase active-exam al botón del examen actual
+      const activeButton = document.querySelector('.exam-button.active-exam');
+      if (activeButton) {
+        activeButton.classList.remove('active-exam');
+      }
+      examButton.classList.add('active-exam');
+    }
+
+    function deleteExam(examId, examButton) {
+      fetch(`/delete-exam?id=${examId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+        .then(response => {
+          if (response.ok) {
+            // Limpiar el contenedor del examen si está mostrando el examen eliminado
+            const examContainer = document.getElementById('exam-viz');
+            if (examButton.classList.contains('active-exam')) {
+              examContainer.innerHTML = '';
+            }
+            examButton.remove(); // Eliminar el botón del examen de la lista
+          } else {
+            console.error('Error al eliminar el examen');
+          }
+        })
+        .catch((error) => console.error('Error al eliminar el examen:', error));
+    }
+  </script>
+</body>
 </html>

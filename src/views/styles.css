@@ -931,3 +931,155 @@ button.generator:hover {
     background-color: #dc3545;
   }  
 
+/*  DISPLAY -> vistaProfesor  */
+
+
+.correct-answer {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .options-list {
+    list-style-type: disc; 
+    padding-left: 20px; 
+  }
+  
+  .options-list li {
+    margin-bottom: 5px;
+  }
+  
+  .question-item {
+    margin-bottom: 20px;
+  }
+  
+  #exam-viz {
+    margin: 20px auto; /* Centrar el contenedor */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 600px; /* Ancho máximo del contenedor */
+    max-height: 500px; /* Altura máxima del contenedor */
+    overflow-y: auto; /* Agregar scroll vertical */
+  }
+  
+  /*   scroll  buttons exam  -> vistaProfesor.html */
+
+  /* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Layout of the main body */
+  .body1 {
+    display: flex;
+    height: 100vh; /* Full height of the viewport */
+    background-color: #e9ecef;
+  }
+  
+  /* Sidebar styling */
+  .sidebar {
+    width: 350px;
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sidebar img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    border: 3px solid #495057;
+  }
+  
+  .sidebar h4 {
+    margin-bottom: 20px;
+  }
+  
+  /* Scroll container */
+  .scroll-padre {
+    flex-grow: 1;
+    width: 100%;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #495057;
+    border-radius: 10px;
+  }
+  
+  .scroll-bg {
+    padding: 10px;
+    background-color: #6c757d;
+    border-radius: 5px;
+  }
+  
+  .scroll-div {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #adb5bd #495057;
+  }
+  
+  /* Styling for the scrollbar */
+  .scroll-div::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .scroll-div::-webkit-scrollbar-thumb {
+    background-color: #adb5bd;
+    border-radius: 10px;
+  }
+  
+  .scroll-div::-webkit-scrollbar-track {
+    background-color: #495057;
+    border-radius: 10px;
+  }
+  
+  /* Exam buttons container */
+  .exams-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+  
+  /* Styling for exam buttons */
+  .exam-button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    width: 70%;
+    transition: background-color 0.3s;
+  }
+  
+  .exam-button:hover {
+    background-color: #5a6268;
+    
+  }
+  
+  /* Main exam display container */
+  #exam-viz {
+    flex-grow: 1;
+    padding: 20px;
+    margin: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    max-width: 600px;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
