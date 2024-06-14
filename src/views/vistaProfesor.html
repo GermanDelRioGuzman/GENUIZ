@@ -14,6 +14,8 @@
       padding: 0;
       background-color: #b3b3b3;
       color: #333333;
+      height: 100vh;
+      overflow: hidden;
     }
     
     /* Layout of the main body */
@@ -136,19 +138,53 @@
     }
     
     /* Main exam display container */
+    .exam-results-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: calc(100% - 350px);
+      padding: 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .exam-results-wrapper {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+    }
+    
     #exam-viz {
       flex-grow: 1;
       padding: 20px;
-      margin: 20px;
       background-color: #e6e6e6; /* Fondo gris claro */
       border: 1px solid #ddd;
       border-radius: 8px;
-      max-width: 600px;
-      max-height: 600px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       color: #333333; /* Color del texto */
+      width: 60%;
+      height: 40; 
     }
+
+    #result-viz {
+      flex-grow: 1;
+      padding: 20px;
+      background-color: #948f8f; /* Fondo gris claro */
+      border: 1px solid #948f8f;
+      border-radius: 8px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      color: #333333; 
+      width: 60%;
+      height: 60%; 
+
+    }
+
+
+
 
     /* Title of the exam */
     #exam-viz h2 {
@@ -346,10 +382,14 @@
       </div>
       <button href="#" id="new" class="btn-new-exam">Nuevo examen</button>
     </div>
-    <!-- Exam part  -->
-    <div id="exam-viz"></div>
-    <!-- Result part -->
-    <div id="result-viz"></div>
+    <div class="exam-results-container">
+      <div class="exam-results-wrapper">
+        <!-- Exam part  -->
+        <div id="exam-viz"></div>
+        <!-- Result part -->
+        <div id="result-viz"></div>
+      </div>
+    </div>
   </div>
 
   <div class="sidebar-menu" id="sidebar-menu">
@@ -466,7 +506,7 @@
         examQuestionsList.appendChild(questionItem);
       });
 
-      // Agreg la lista de preguntas al contenedor 
+      // Agrega la lista de preguntas al contenedor 
       examContainer.appendChild(examQuestionsList);
 
       // Crea un botón para eliminar el examen
@@ -475,7 +515,7 @@
       deleteButton.className = 'delete-button';
       deleteButton.addEventListener('click', function () {
         if (confirm('¿Estás seguro de que deseas eliminar este examen?')) {
-          deleteExam(examData.id, examButton); // Llamaa la función deleteExam con el id del examen y el botón como parámetros
+          deleteExam(examData.id, examButton); // Llama a la función deleteExam con el id del examen y el botón como parámetros
         }
       });
       examContainer.appendChild(deleteButton);
@@ -490,47 +530,53 @@
           .then(results => {
             resultContainer.innerHTML = ''; // Limpia el contenedor antes de mostrar nuevos resultados
 
-            // Crea la tabla para los resultados
-            const table = document.createElement('table');
-            table.classList.add('results-table', 'table', 'table-striped');
+            if (results.length === 0) {
+              const noResultsMessage = document.createElement('p');
+              noResultsMessage.textContent = 'Ningún usuario ha respondido este examen';
+              resultContainer.appendChild(noResultsMessage);
+            } else {
+              // Crea la tabla para los resultados
+              const table = document.createElement('table');
+              table.classList.add('results-table', 'table', 'table-striped');
 
-            // Encabezados 
-            const tableHeader = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            const headers = ['Usuario', 'Nombre', 'Calificación', 'Fecha y Hora'];
+              // Encabezados 
+              const tableHeader = document.createElement('thead');
+              const headerRow = document.createElement('tr');
+              const headers = ['Usuario', 'Nombre', 'Calificación', 'Fecha y Hora'];
 
-            headers.forEach(headerText => {
-              const header = document.createElement('th');
-              header.textContent = headerText;
-              header.setAttribute('scope', 'col');
-              headerRow.appendChild(header);
-            });
+              headers.forEach(headerText => {
+                const header = document.createElement('th');
+                header.textContent = headerText;
+                header.setAttribute('scope', 'col');
+                headerRow.appendChild(header);
+              });
 
-            tableHeader.appendChild(headerRow);
-            table.appendChild(tableHeader);
+              tableHeader.appendChild(headerRow);
+              table.appendChild(tableHeader);
 
-            // Cuerpo de la tabla
-            const tableBody = document.createElement('tbody');
-            results.forEach(result => {
-              const row = document.createElement('tr');
-              const usernameCell = document.createElement('td');
-              usernameCell.textContent = result.username;
-              const nameCell = document.createElement('td');
-              nameCell.textContent = result.name; 
-              const scoreCell = document.createElement('td');
-              scoreCell.textContent = result.score;
-              const timestampCell = document.createElement('td');
-              timestampCell.textContent = new Date(result.timestamp).toLocaleString(); 
+              // Cuerpo de la tabla
+              const tableBody = document.createElement('tbody');
+              results.forEach(result => {
+                const row = document.createElement('tr');
+                const usernameCell = document.createElement('td');
+                usernameCell.textContent = result.username;
+                const nameCell = document.createElement('td');
+                nameCell.textContent = result.name; 
+                const scoreCell = document.createElement('td');
+                scoreCell.textContent = result.score;
+                const timestampCell = document.createElement('td');
+                timestampCell.textContent = new Date(result.timestamp).toLocaleString(); 
 
-              row.appendChild(usernameCell);
-              row.appendChild(nameCell);
-              row.appendChild(scoreCell);
-              row.appendChild(timestampCell);
-              tableBody.appendChild(row);
-            });
+                row.appendChild(usernameCell);
+                row.appendChild(nameCell);
+                row.appendChild(scoreCell);
+                row.appendChild(timestampCell);
+                tableBody.appendChild(row);
+              });
 
-            table.appendChild(tableBody);
-            resultContainer.appendChild(table);
+              table.appendChild(tableBody);
+              resultContainer.appendChild(table);
+            }
           })
           .catch(error => console.error('Error al obtener los resultados:', error));
       });
@@ -568,4 +614,3 @@
   </script>
 </body>
 </html>
-
