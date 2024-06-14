@@ -359,9 +359,6 @@
           const tbody = document.createElement('tbody');
           results.forEach(result => {
             const row = document.createElement('tr');
-            row.addEventListener('click', function () {
-              displayResult(result);
-            });
             row.innerHTML = `
               <td>${result.title}</td>
               <td>${new Date(result.timestamp).toLocaleDateString()}</td>
@@ -508,73 +505,74 @@
     }
 
     function displayResult(resultData) {
-      const resultContainer = document.getElementById('result-viz');
-      resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo resultado
+  const resultContainer = document.getElementById('result-viz');
+  resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo resultado
 
-      // Título del examen
-      const resultTitle = document.createElement('h2');
-      resultTitle.textContent = `Resultado del Examen: ${resultData.title}`;
-      resultContainer.appendChild(resultTitle);
+  // Título del examen
+  const resultTitle = document.createElement('h2');
+  resultTitle.textContent = `Resultado del Examen: ${resultData.title}`;
+  resultContainer.appendChild(resultTitle);
 
-      // Crear una tabla para mostrar la información del resultado
-      const resultTable = document.createElement('table');
-      resultTable.classList.add('results-table', 'table', 'table-striped');
+  // Crear una tabla para mostrar la información del resultado
+  const resultTable = document.createElement('table');
+  resultTable.classList.add('results-table', 'table', 'table-striped');
 
-      const tableBody = document.createElement('tbody');
+  const tableBody = document.createElement('tbody');
 
-      const row3 = document.createElement('tr');
-      const cell3_1 = document.createElement('th');
-      cell3_1.textContent = 'Calificación';
-      const cell3_2 = document.createElement('td');
-      cell3_2.textContent = resultData.score;
-      row3.appendChild(cell3_1);
-      row3.appendChild(cell3_2);
+  const row3 = document.createElement('tr');
+  const cell3_1 = document.createElement('th');
+  cell3_1.textContent = 'Calificación';
+  const cell3_2 = document.createElement('td');
+  cell3_2.textContent = resultData.score;
+  row3.appendChild(cell3_1);
+  row3.appendChild(cell3_2);
 
-      const row4 = document.createElement('tr');
-      const cell4_1 = document.createElement('th');
-      cell4_1.textContent = 'Fecha y Hora';
-      const cell4_2 = document.createElement('td');
-      cell4_2.textContent = new Date(resultData.timestamp).toLocaleString();
-      row4.appendChild(cell4_1);
-      row4.appendChild(cell4_2);
+  const row4 = document.createElement('tr');
+  const cell4_1 = document.createElement('th');
+  cell4_1.textContent = 'Fecha y Hora';
+  const cell4_2 = document.createElement('td');
+  cell4_2.textContent = new Date(resultData.timestamp).toLocaleString();
+  row4.appendChild(cell4_1);
+  row4.appendChild(cell4_2);
 
-      tableBody.appendChild(row3);
-      tableBody.appendChild(row4);
+  tableBody.appendChild(row3);
+  tableBody.appendChild(row4);
 
-      resultTable.appendChild(tableBody);
-      resultContainer.appendChild(resultTable);
+  resultTable.appendChild(tableBody);
+  resultContainer.appendChild(resultTable);
 
-      // Mostrar las preguntas y respuestas
-      const examDataObj = resultData.exam_data;
-      const examQuestionsList = document.createElement('div');
-      examDataObj.preguntas.forEach((pregunta, index) => {
-        const questionItem = document.createElement('div');
-        questionItem.classList.add('question-item');
-        const questionText = document.createElement('p');
-        questionText.textContent = `${index + 1}. ${pregunta.enunciado}`;
+  // Mostrar las preguntas y respuestas
+  const examDataObj = resultData.exam_data;
+  const examQuestionsList = document.createElement('div');
+  examDataObj.preguntas.forEach((pregunta, index) => {
+    const questionItem = document.createElement('div');
+    questionItem.classList.add('question-item');
+    const questionText = document.createElement('p');
+    questionText.textContent = `${index + 1}. ${pregunta.enunciado}`;
 
-        const optionsList = document.createElement('ul');
-        optionsList.classList.add('options-list');
+    const optionsList = document.createElement('ul');
+    optionsList.classList.add('options-list');
 
-        pregunta.opciones.forEach(opcion => {
-          const optionItem = document.createElement('li');
-          optionItem.textContent = opcion;
+    pregunta.opciones.forEach(opcion => {
+      const optionItem = document.createElement('li');
+      optionItem.textContent = opcion;
 
-          // Comparar con la respuesta correcta y aplicar estilo
-          if (opcion === pregunta.respuesta) {
-            optionItem.classList.add('correct-answer'); // Aquí aplicas el estilo para la respuesta correcta
-          }
+      // Comparar con la respuesta correcta y aplicar estilo
+      if (opcion === pregunta.respuesta) {
+        optionItem.classList.add('correct-answer'); // Aquí aplicas el estilo para la respuesta correcta
+      }
 
-          optionsList.appendChild(optionItem);
-        });
+      optionsList.appendChild(optionItem);
+    });
 
-        questionItem.appendChild(questionText);
-        questionItem.appendChild(optionsList);
-        examQuestionsList.appendChild(questionItem);
-      });
+    questionItem.appendChild(questionText);
+    questionItem.appendChild(optionsList);
+    examQuestionsList.appendChild(questionItem);
+  });
 
-      resultContainer.appendChild(examQuestionsList);
-    }
+  resultContainer.appendChild(examQuestionsList);
+}
+
   </script>
 </body>
 </html>

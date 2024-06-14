@@ -556,9 +556,17 @@ app.get('/get-student-info', ensureAuthenticated, (req, res) => {
 app.get('/get-student-results', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const userId = req.user.id;
     const query = `
-        SELECT er.exam_id, er.score, er.timestamp, e.title, e.topic, e.exam_code
+        SELECT 
+            er.exam_id, 
+            er.score, 
+            er.timestamp, 
+            e.title, 
+            e.topic, 
+            e.exam_code,
+            u.name AS professor_name
         FROM exam_results er
         JOIN exams_json e ON er.exam_id = e.id
+        JOIN users u ON e.teacher_id = u.id
         WHERE er.user_id = ?
     `;
 
@@ -570,6 +578,7 @@ app.get('/get-student-results', ensureAuthenticated, ensureRole('student'), (req
         res.json(results);
     });
 });
+
 
 // Verificar si un examen ya ha sido respondido por el estudiante
 app.get('/check-exam-result', ensureAuthenticated, ensureRole('student'), (req, res) => {
