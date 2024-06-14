@@ -534,43 +534,55 @@ app.get('/get-profesor-info', ensureAuthenticated, (req, res) => {
 
   //PRUEBA 
   //para ver los datos del alumno
-  app.get('/get-student-info', ensureAuthenticated, (req, res) => {
+  // Obtener información del estudiante
+app.get('/get-student-info', ensureAuthenticated, (req, res) => {
     const userId = req.user.id;
     const query = 'SELECT name, username FROM users WHERE id = ?';
-    
+
     connection.query(query, [userId], (err, results) => {
-      if (err) {
-        console.error('Error al obtener la información del estudiante:', err);
-        return res.status(500).json({ error: 'Error al obtener la información del estudiante' });
-      }
-      if (results.length > 0) {
-        res.json(results[0]);
-      } else {
-        res.status(404).json({ error: 'Estudiante no encontrado' });
-      }
+        if (err) {
+            console.error('Error al obtener la información del estudiante:', err);
+            return res.status(500).json({ error: 'Error al obtener la información del estudiante' });
+        }
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).json({ error: 'Estudiante no encontrado' });
+        }
     });
-  });
-  
-  // para obtener los resultados del estudiante y verificar si ya respondióo un examen
-  app.get('/get-student-results', ensureAuthenticated, ensureRole('student'), (req, res) => {
+});
+
+// Obtener resultados del estudiante
+app.get('/get-student-results', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const userId = req.user.id;
-    const query = 'SELECT er.*, e.title FROM exam_results er JOIN exams_json e ON er.exam_id = e.id WHERE er.user_id = ?';
-    
+    const query = `
+        SELECT er.exam_id, er.score, er.timestamp, e.title, e.topic, e.exam_code
+        FROM exam_results er
+        JOIN exams_json e ON er.exam_id = e.id
+        WHERE er.user_id = ?
+    `;
+
     connection.query(query, [userId], (err, results) => {
-      if (err) {
-        console.error('Error al obtener los resultados del estudiante:', err);
-        return res.status(500).json({ error: 'Error al obtener los resultados del estudiante' });
-      }
-      res.json(results);
+        if (err) {
+            console.error('Error al obtener los resultados del estudiante:', err);
+            return res.status(500).json({ error: 'Error al obtener los resultados del estudiante' });
+        }
+        res.json(results);
     });
-  });
-  
-  //para verificar si un examen ya ha sido respondido por el estudiante
-  app.get('/check-exam-result', ensureAuthenticated, ensureRole('student'), (req, res) => {
+});
+
+// Verificar si un examen ya ha sido respondido por el estudiante
+app.get('/check-exam-result', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const examId = req.query.examId;
     const userId = req.user.id;
 
-    const query = 'SELECT * FROM exam_results WHERE exam_id = ? AND user_id = ?';
+    const query = `
+        SELECT er.*, e.title, e.topic, e.exam_code
+        FROM exam_results er
+        JOIN exams_json e ON er.exam_id = e.id
+        WHERE er.exam_id = ? AND er.user_id = ?
+    `;
+
     connection.query(query, [examId, userId], (err, results) => {
         if (err) {
             console.error('Error al verificar el resultado del examen:', err);
@@ -584,7 +596,40 @@ app.get('/get-profesor-info', ensureAuthenticated, (req, res) => {
     });
 });
 
+// Obtener un examen por código
+app.get('/get-exam-by-code', ensureAuthenticated, ensureRole('student'), (req, res) => {
+    const examCode = req.query.code;
 
+    const query = 'SELECT * FROM exams_json WHERE exam_code = ?';
+    connection.query(query, [examCode], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el examen:', err);
+            return res.status(500).json({ error: 'Error al obtener el examen' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Examen no encontrado' });
+        }
+        res.json(results[0]);
+    });
+});
+
+// Guardar el resultado del examen
+app.post('/save-exam-result', ensureAuthenticated, ensureRole('student'), (req, res) => {
+    const { examId, finalScore } = req.body;
+    const userId = req.user.id;
+
+    const query = 'INSERT INTO exam_results (user_id, exam_id, score) VALUES (?, ?, ?)';
+    connection.query(query, [userId, examId, finalScore], (err, results) => {
+        if (err) {
+            console.error('Error al guardar el resultado del examen:', err);
+            return res.status(500).json({ error: 'Error al guardar el resultado del examen' });
+        }
+        res.json({ message: 'Resultado guardado correctamente' });
+    });
+});
+
+
+//NO VAYAN A BORRAR USUARIOS SHHHHH
 // Eliminar un usuario MANUALMENTE  (o sea en la base de datos)
 app.delete('/delete-user', ensureAuthenticated, (req, res) => {
     const userId = req.query.id;

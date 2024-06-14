@@ -503,6 +503,8 @@
     }
 
     function displayResult(resultData, resultButton) {
+      console.log(resultData); // Añade este console.log para inspeccionar los datos
+
       const resultContainer = document.getElementById('result-viz');
       resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo resultado
 
@@ -516,22 +518,6 @@
       resultTable.classList.add('results-table', 'table', 'table-striped');
 
       const tableBody = document.createElement('tbody');
-
-      const row1 = document.createElement('tr');
-      const cell1_1 = document.createElement('th');
-      cell1_1.textContent = 'Tema';
-      const cell1_2 = document.createElement('td');
-      cell1_2.textContent = resultData.topic || 'No disponible';
-      row1.appendChild(cell1_1);
-      row1.appendChild(cell1_2);
-
-      const row2 = document.createElement('tr');
-      const cell2_1 = document.createElement('th');
-      cell2_1.textContent = 'Código del Examen';
-      const cell2_2 = document.createElement('td');
-      cell2_2.textContent = resultData.exam_code || 'No disponible';
-      row2.appendChild(cell2_1);
-      row2.appendChild(cell2_2);
 
       const row3 = document.createElement('tr');
       const cell3_1 = document.createElement('th');
@@ -549,8 +535,6 @@
       row4.appendChild(cell4_1);
       row4.appendChild(cell4_2);
 
-      tableBody.appendChild(row1);
-      tableBody.appendChild(row2);
       tableBody.appendChild(row3);
       tableBody.appendChild(row4);
 
@@ -560,14 +544,12 @@
       // Agregar la clase active-result al botón del resultado actual
       const activeButton = document.querySelector('.result-button.active-result');
       if (activeButton) {
-        activeButton.classList.remove('active-result');
+          activeButton.classList.remove('active-result');
       }
       if (resultButton) {
-        resultButton.classList.add('active-result');
+          resultButton.classList.add('active-result');
       }
     }
-
   </script>
 </body>
 </html>
-
