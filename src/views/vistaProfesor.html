@@ -174,19 +174,31 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      overflow: hidden;
     }
     
     .results-table th, .results-table td {
-      border: 1px solid #ddd;
+      border: 1px solid #dee2e6;
       padding: 8px;
       text-align: left;
     }
     
     .results-table th {
-      background-color: #f2f2f2;
-      color: #333;
+      background-color: #343a40;
+      color: #f8f9fa;
     }
     
+    .results-table td {
+      background-color: #ffffff;
+      color: #343a40;
+    }
+
+    .results-table tbody tr:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+
     /* Estilos para el menú desplegable */
     .menu-btn {
       position: absolute;
@@ -414,12 +426,6 @@
             // Crear tabla para los resultados
             const table = document.createElement('table');
             table.classList.add('results-table', 'table', 'table-striped');
-
-            // Título para la tabla de resultados
-            const tableTitle = document.createElement('caption');
-            tableTitle.textContent = 'Resultados';
-            tableTitle.classList.add('table-title');
-            table.appendChild(tableTitle);
 
             // Encabezados de la tabla
             const tableHeader = document.createElement('thead');
