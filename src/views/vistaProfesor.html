@@ -12,7 +12,8 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #e9ecef;
+      background-color: #b3b3b3;
+      color: #333333;
     }
     
     /* Layout of the main body */
@@ -24,7 +25,7 @@
     /* Sidebar styling */
     .sidebar {
       width: 350px;
-      background-color: #343a40;
+      background-color: #4d4d4d;
       color: white;
       padding: 20px;
       display: flex;
@@ -38,7 +39,7 @@
       height: 100px;
       margin-bottom: 20px;
       border-radius: 50%;
-      border: 3px solid #495057;
+      border: 3px solid #6c6c6c;
     }
     
     .sidebar h4 {
@@ -53,21 +54,21 @@
       text-align: center;
     }
     
-    .button-h, .btn-new-exam, .result-button {
+    .btn-new-exam {
       margin-top: 10px;
       width: 100%;
       padding: 10px;
-      background-color: #6c757d;
+      background-color: #4d4d4d;
       color: white;
       border: none;
       text-align: center;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 20px;
       text-decoration: none;
     }
     
-    .button-h:hover, .btn-new-exam:hover, .result-button:hover {
-      background-color: #5a6268;
+    .btn-new-exam:hover {
+      background-color: #595959;
     }
     
     .scroll-padre {
@@ -76,13 +77,13 @@
       overflow-y: auto;
       margin-bottom: 20px;
       padding: 10px;
-      background-color: #495057;
+      background-color: #6c6c6c;
       border-radius: 10px;
     }
     
     .scroll-bg {
       padding: 10px;
-      background-color: #6c757d;
+      background-color: #808080;
       border-radius: 5px;
     }
     
@@ -90,7 +91,7 @@
       height: 100%;
       overflow-y: auto;
       scrollbar-width: thin;
-      scrollbar-color: #adb5bd #495057;
+      scrollbar-color: #adb5bd #6c6c6c;
     }
     
     /* Styling for the scrollbar */
@@ -104,7 +105,7 @@
     }
     
     .scroll-div::-webkit-scrollbar-track {
-      background-color: #495057;
+      background-color: #6c6c6c;
       border-radius: 10px;
     }
     
@@ -118,12 +119,12 @@
     
     /* Styling for exam buttons */
     .exam-button {
-      background-color: #6c757d;
+      background-color: #808080;
       color: white;
       border: none;
       padding: 10px;
       margin: 5px 0;
-      border-radius: 5px;
+      border-radius: 20px;
       cursor: pointer;
       text-align: center;
       width: 70%;
@@ -131,7 +132,7 @@
     }
     
     .exam-button:hover {
-      background-color: #5a6268;
+      background-color: #6c6c6c;
     }
     
     /* Main exam display container */
@@ -139,64 +140,91 @@
       flex-grow: 1;
       padding: 20px;
       margin: 20px;
-      background-color: #fff;
+      background-color: #e6e6e6; /* Fondo gris claro */
       border: 1px solid #ddd;
       border-radius: 8px;
       max-width: 600px;
-      max-height: 500px;
+      max-height: 600px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      color: #333333; /* Color del texto */
     }
-    
+
+    /* Title of the exam */
+    #exam-viz h2 {
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+
+    /* Subtitle for the topic */
+    #exam-viz h3 {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+
+    /* Exam code */
+    #exam-viz p.exam-code {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #cccccc;
+      padding: 5px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    /* Question text */
+    .question-item p {
+      font-weight: bold;
+    }
+
+    /* Options list */
+    .options-list {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+
+    /* Option items */
+    .options-list li {
+      margin-bottom: 5px;
+    }
+
+    /* Correct answer */
     .correct-answer {
       color: green;
       font-weight: bold;
     }
-    
-    .options-list {
-      list-style-type: disc; 
-      padding-left: 20px; 
-    }
-    
-    .options-list li {
-      margin-bottom: 5px;
-    }
-    
-    .question-item {
-      margin-bottom: 20px;
-    }
-    
+
     .results-container {
       margin-top: 20px;
     }
-    
+
     .results-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      background-color: #f8f9fa;
+      background-color: #b3b3b3;
       border-radius: 8px;
       overflow: hidden;
     }
-    
+
     .results-table th, .results-table td {
-      border: 1px solid #dee2e6;
+      border: 1px solid #6c6c6c;
       padding: 8px;
       text-align: left;
     }
-    
+
     .results-table th {
-      background-color: #343a40;
-      color: #f8f9fa;
+      background-color: #6c6c6c;
+      color: #f0f0f0;
     }
-    
+
     .results-table td {
-      background-color: #ffffff;
-      color: #343a40;
+      background-color: #b3b3b3;
+      color: #333333;
     }
 
     .results-table tbody tr:nth-child(odd) {
-      background-color: #f2f2f2;
+      background-color: #d1d1d1;
     }
 
     /* Estilos para el menú desplegable */
@@ -209,18 +237,19 @@
       cursor: pointer;
       z-index: 2000;
     }
-    
+
     .menu-btn img {
       width: 20px;
+      filter: invert(1);
     }
-    
+
     .sidebar-menu {
       position: fixed;
       top: 0;
       left: -350px;
       width: 350px;
       height: 100%;
-      background-color: #343a40;
+      background-color: #4d4d4d;
       color: white;
       transition: left 0.3s ease;
       display: flex;
@@ -229,34 +258,71 @@
       padding-top: 20px;
       z-index: 1000;
     }
-    
+
     .sidebar-menu.active {
       left: 0;
     }
-    
+
     .sidebar-menu img {
       width: 80px;
       border-radius: 50%;
     }
-    
+
     .sidebar-menu h4 {
       margin: 10px 0;
       text-align: center;
     }
-    
+
     .logout-btn {
-      background: none;
+      background-color: #000000;
       border: none;
       cursor: pointer;
       color: #f0f5fa;
+      padding: 10px;
+      border-radius: 20px;
       margin-top: auto;
       margin-bottom: 20px;
+      margin-right: 10px;
     }
-    
+
+    .logout-btn:hover {
+      background-color: #272626;
+    }
+
     .logout-btn img {
       width: 25px;
       margin-right: 10px;
       transform: rotate(180deg);
+      filter: invert(1);
+    }
+
+    .delete-button {
+      background-color: #e00f0f;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+      margin-right: 10px;
+    }
+
+    .delete-button:hover {
+      background-color: #ff4d4d;
+    }
+
+    .results-button {
+      background-color: #070707;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .results-button:hover {
+      background-color: #595959;
     }
   </style>
 </head>
@@ -363,6 +429,7 @@
       // Crear el código del examen
       const examCodePara = document.createElement('p');
       examCodePara.textContent = `Código del Examen: ${examData.exam_code}`;
+      examCodePara.classList.add('exam-code'); // Aplicar la clase CSS
       examContainer.appendChild(examCodePara);
 
       // Parsear el exam_data para mostrarlo como JSON
@@ -405,7 +472,7 @@
       // Crear botón para eliminar el examen
       const deleteButton = document.createElement('button');
       deleteButton.textContent = 'Eliminar Examen';
-      deleteButton.className = 'delete-button btn btn-danger';
+      deleteButton.className = 'delete-button';
       deleteButton.addEventListener('click', function () {
         if (confirm('¿Estás seguro de que deseas eliminar este examen?')) {
           deleteExam(examData.id, examButton); // Llamar a la función deleteExam con el id del examen y el botón como parámetros
@@ -416,7 +483,7 @@
       // Crear botón para ver los resultados
       const resultsButton = document.createElement('button');
       resultsButton.textContent = 'Ver Resultados';
-      resultsButton.className = 'results-button btn btn-primary';
+      resultsButton.className = 'results-button';
       resultsButton.addEventListener('click', function () {
         fetch(`/get-exam-results?examId=${examData.id}`)
           .then(response => response.json())
@@ -501,3 +568,4 @@
   </script>
 </body>
 </html>
+
