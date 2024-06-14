@@ -29,7 +29,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//middleware to invalid cache
+//middleware to invalidate cache
 app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.setHeader('Expires', '-1');
@@ -53,24 +53,7 @@ connection.connect((err) => {
         return;
     }
     console.log('Conexión exitosa a la base de datos');
-    connection.query(`CREATE TABLE IF NOT EXISTS exams_json (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        teacher_id INT NOT NULL,
-        title VARCHAR(50) NOT NULL,
-        topic VARCHAR(255) NOT NULL,
-        description_ VARCHAR(255) NULL,
-        level ENUM('facil', 'medio', 'dificil') NULL,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        exam_code VARCHAR(50) UNIQUE NOT NULL,
-        exam_data JSON,
-        FOREIGN KEY (teacher_id) REFERENCES users(id)
-    )`, (err, result) => {
-        if (err) {
-            console.error('Error al crear la tabla:', err);
-        } else {
-            console.log('Tabla exams_json creada o ya existe');
-        }
-    });
+   
 });
 
 passport.use(new PassportLocal(async function (username, password, done) {
@@ -299,10 +282,20 @@ app.post('/completar-registro', ensureAuthenticated, (req, res) => {
 
         connection.query('UPDATE users SET role_id = ? WHERE id = ?', [role_id, userId], (err, results) => {
             if (err) {
-                return res.redirect('/completar-registro');
+                console.error('Error al actualizar el rol del usuario:', err);
+                return res.redirect('/completar-registro?error=update');
             }
 
-            res.redirect('/');
+            req.user.role_id = role_id;  // Actualiza el rol en el objeto de usuario en la sesión
+            connection.query('SELECT role_name FROM role WHERE id = ?', [role_id], (err, results) => {
+                if (err) {
+                    console.error('Error al obtener el nombre del rol:', err);
+                    return res.redirect('/completar-registro?error=rolename');
+                }
+
+                req.user.role_name = results[0].role_name;  // Actualiza el nombre del rol en el objeto de usuario en la sesión
+                res.redirect('/');
+            });
         });
     });
 });
@@ -586,6 +579,18 @@ app.get('/get-profesor-info', ensureAuthenticated, (req, res) => {
 });
 
 
+// Eliminar un usuario MANUALMENTE  (o sea en la base de datos)
+app.delete('/delete-user', ensureAuthenticated, (req, res) => {
+    const userId = req.query.id;
+
+    connection.query('DELETE FROM users WHERE id = ?', [userId], (err, results) => {
+        if (err) {
+            console.error('Error al eliminar el usuario:', err);
+            return res.status(500).send('Error al eliminar el usuario.');
+        }
+        res.send('Usuario eliminado correctamente.');
+    });
+});
 
 
 //
