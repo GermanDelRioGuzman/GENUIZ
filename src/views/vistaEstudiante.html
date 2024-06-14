@@ -1,6 +1,5 @@
 <!-- para pruebas-->
 <!--AL FINAL SEPARAMOS LO DE STYLES-->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -61,7 +60,7 @@
       border: none;
       text-align: center;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 10px;
       text-decoration: none;
     }
 
@@ -145,17 +144,31 @@
       height: 100%;
     }
 
-    #exam-viz, #result-viz {
+    #exam-viz {
       flex-grow: 1;
       padding: 20px;
-      background-color: #aaa9a9;
+      background-color: #d4d4d4;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      color: #333333;
+      width: 60%;
+      height: 40;
+    }
+
+    #result-viz{
+      flex-grow: 1;
+      padding: 20px;
+      background-color: #d4d4d4;
       border: 1px solid #ddd;
       border-radius: 8px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       color: #333333;
       width: 48%;
-      height: calc(100% - 40px);
+      height: 50%;
+
     }
 
     .correct-answer {
@@ -271,6 +284,22 @@
       margin-right: 10px;
       transform: rotate(180deg);
       filter: invert(1);
+    }
+
+    /* Estilos para el botón de enviar */
+    .btn-submit {
+      background-color: #030303;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+      background-color: #171718;
     }
   </style>
 </head>
@@ -469,7 +498,7 @@
       //  botón para enviar
       const submitButton = document.createElement('button');
       submitButton.textContent = 'Enviar';
-      submitButton.className = 'btn btn-primary';
+      submitButton.className = 'btn-submit';
       submitButton.addEventListener('click', function () {
         submitExam(examData.id, examDataObj.preguntas);
       });
