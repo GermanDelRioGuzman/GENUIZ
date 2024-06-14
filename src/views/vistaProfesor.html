@@ -1,3 +1,4 @@
+<!--PRUEBA1-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -333,7 +334,9 @@
 
     function displayExam(examData, examButton) {
       const examContainer = document.getElementById('exam-viz');
+      const resultContainer = document.getElementById('result-viz');
       examContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo examen
+      resultContainer.innerHTML = ''; // Limpiar el contenedor de resultados
 
       // Crear el título del examen
       const examTitle = document.createElement('h2');
@@ -406,7 +409,6 @@
         fetch(`/get-exam-results?examId=${examData.id}`)
           .then(response => response.json())
           .then(results => {
-            const resultContainer = document.getElementById('result-viz');
             resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar nuevos resultados
 
             // Crear tabla para los resultados

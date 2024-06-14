@@ -1,3 +1,5 @@
+//PRUEBAS GENUIZ
+
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
@@ -496,7 +498,12 @@ app.post('/save-exam-result', ensureAuthenticated, ensureRole('student'), (req, 
 // Modifica la ruta de vistaProfesor.html para mostrar los resultados
 app.get('/get-exam-results', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
     const examId = req.query.examId;
-    const query = 'SELECT er.*, u.username, er.timestamp FROM exam_results er JOIN users u ON er.user_id = u.id WHERE er.exam_id = ?';
+    const query = `
+        SELECT er.*, u.username, u.name, er.timestamp 
+        FROM exam_results er 
+        JOIN users u ON er.user_id = u.id 
+        WHERE er.exam_id = ?
+    `;
     connection.query(query, [examId], (err, results) => {
         if (err) {
             console.error('Error al obtener los resultados:', err);
