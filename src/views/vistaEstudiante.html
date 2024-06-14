@@ -25,7 +25,7 @@
     }
 
     .sidebar {
-      width: 350px;
+      width: 300px;
       background-color: #343a40;
       color: white;
       padding: 20px;
@@ -36,8 +36,8 @@
     }
 
     .sidebar img {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       margin-bottom: 20px;
       border-radius: 50%;
       border: 3px solid #495057;
@@ -48,11 +48,8 @@
       text-align: center;
     }
 
-    .info-text {
-      color: #d1d1d1;
-      font-size: 18px;
-      margin-bottom: 20px;
-      text-align: center;
+    .form-group {
+      width: 100%;
     }
 
     .btn-enter-exam {
@@ -64,7 +61,7 @@
       border: none;
       text-align: center;
       cursor: pointer;
-      border-radius: 20px;
+      border-radius: 5px;
       text-decoration: none;
     }
 
@@ -76,15 +73,12 @@
       flex-grow: 1;
       width: 100%;
       overflow-y: auto;
-      margin-bottom: 20px;
-      padding: 10px;
-      background-color: #495057;
-      border-radius: 10px;
+      margin-top: 20px;
     }
 
     .scroll-bg {
       padding: 10px;
-      background-color: #6c757d;
+      background-color: #495057;
       border-radius: 5px;
     }
 
@@ -122,10 +116,10 @@
       border: none;
       padding: 10px;
       margin: 5px 0;
-      border-radius: 20px;
+      border-radius: 5px;
       cursor: pointer;
       text-align: center;
-      width: 70%;
+      width: 90%;
       transition: background-color 0.3s;
     }
 
@@ -137,7 +131,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: calc(100% - 350px);
+      width: calc(100% - 300px);
       padding: 20px;
       height: 100vh;
       overflow: hidden;
@@ -154,7 +148,7 @@
     #exam-viz, #result-viz {
       flex-grow: 1;
       padding: 20px;
-      background-color: #fff;
+      background-color: #ffffff;
       border: 1px solid #ddd;
       border-radius: 8px;
       overflow-y: auto;
@@ -186,29 +180,29 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      background-color: #b3b3b3;
+      background-color: #f8f9fa;
       border-radius: 8px;
       overflow: hidden;
     }
 
     .results-table th, .results-table td {
-      border: 1px solid #6c6c6c;
+      border: 1px solid #dee2e6;
       padding: 8px;
       text-align: left;
     }
 
     .results-table th {
-      background-color: #6c6c6c;
-      color: #f0f0f0;
+      background-color: #6c757d;
+      color: #ffffff;
     }
 
     .results-table td {
-      background-color: #b3b3b3;
+      background-color: #ffffff;
       color: #333333;
     }
 
     .results-table tbody tr:nth-child(odd) {
-      background-color: #d1d1d1;
+      background-color: #e9ecef;
     }
 
     .menu-btn {
@@ -229,8 +223,8 @@
     .sidebar-menu {
       position: fixed;
       top: 0;
-      left: -350px;
-      width: 350px;
+      left: -300px;
+      width: 300px;
       height: 100%;
       background-color: #343a40;
       color: white;
@@ -262,7 +256,7 @@
       cursor: pointer;
       color: #f0f5fa;
       padding: 10px;
-      border-radius: 20px;
+      border-radius: 5px;
       margin-top: auto;
       margin-bottom: 20px;
       margin-right: 10px;
@@ -288,8 +282,10 @@
     <div class="sidebar">
       <img src="https://cdn-icons-png.flaticon.com/512/320/320333.png" alt="Estudiante">
       <h4 id="student-name">Estudiante</h4>
-      <input type="text" id="examCode" class="form-control" placeholder="Código del Examen">
-      <button class="btn-enter-exam" id="enterExamCode">Ingresar Código</button>
+      <div class="form-group">
+        <input type="text" id="examCode" class="form-control" placeholder="Código del Examen">
+        <button class="btn-enter-exam" id="enterExamCode">Ingresar Código</button>
+      </div>
       <div class="scroll-padre">
         <div class="scroll-bg">
           <div class="scroll-div">
@@ -407,6 +403,7 @@
       //  título del examen
       const examTitle = document.createElement('h2');
       examTitle.textContent = `Responder Examen: ${examData.title}`;
+      examTitle.style.fontWeight = 'bold';
       examContainer.appendChild(examTitle);
 
       // subtítulo del tema
