@@ -14,6 +14,9 @@
       margin: 0;
       padding: 0;
       background-color: #e9ecef;
+      color: #333333;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .body1 {
@@ -56,17 +59,17 @@
       margin-top: 10px;
       width: 100%;
       padding: 10px;
-      background-color: #6c757d;
+      background-color: #4d4d4d;
       color: white;
       border: none;
       text-align: center;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 20px;
       text-decoration: none;
     }
 
     .btn-enter-exam:hover {
-      background-color: #5a6268;
+      background-color: #595959;
     }
 
     .scroll-padre {
@@ -119,7 +122,7 @@
       border: none;
       padding: 10px;
       margin: 5px 0;
-      border-radius: 5px;
+      border-radius: 20px;
       cursor: pointer;
       text-align: center;
       width: 70%;
@@ -130,17 +133,35 @@
       background-color: #5a6268;
     }
 
-    #exam-viz {
+    .exam-results-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: calc(100% - 350px);
+      padding: 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .exam-results-wrapper {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+    }
+
+    #exam-viz, #result-viz {
       flex-grow: 1;
       padding: 20px;
-      margin: 20px;
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 8px;
-      max-width: 600px;
-      max-height: 500px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      color: #333333; /* Color del texto */
+      width: 48%;
+      height: calc(100% - 40px);
     }
 
     .correct-answer {
@@ -149,8 +170,8 @@
     }
 
     .options-list {
-      list-style-type: disc; 
-      padding-left: 20px; 
+      list-style-type: disc;
+      padding-left: 20px;
     }
 
     .options-list li {
@@ -161,25 +182,33 @@
       margin-bottom: 20px;
     }
 
-    .results-container {
-      margin-top: 20px;
-    }
-
     .results-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      background-color: #b3b3b3;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .results-table th, .results-table td {
-      border: 1px solid #ddd;
+      border: 1px solid #6c6c6c;
       padding: 8px;
       text-align: left;
     }
 
     .results-table th {
-      background-color: #f2f2f2;
-      color: #333;
+      background-color: #6c6c6c;
+      color: #f0f0f0;
+    }
+
+    .results-table td {
+      background-color: #b3b3b3;
+      color: #333333;
+    }
+
+    .results-table tbody tr:nth-child(odd) {
+      background-color: #d1d1d1;
     }
 
     .menu-btn {
@@ -194,6 +223,7 @@
 
     .menu-btn img {
       width: 20px;
+      filter: invert(1);
     }
 
     .sidebar-menu {
@@ -227,18 +257,26 @@
     }
 
     .logout-btn {
-      background: none;
+      background-color: #000000;
       border: none;
       cursor: pointer;
       color: #f0f5fa;
+      padding: 10px;
+      border-radius: 20px;
       margin-top: auto;
       margin-bottom: 20px;
+      margin-right: 10px;
+    }
+
+    .logout-btn:hover {
+      background-color: #272626;
     }
 
     .logout-btn img {
       width: 25px;
       margin-right: 10px;
       transform: rotate(180deg);
+      filter: invert(1);
     }
   </style>
 </head>
@@ -262,9 +300,14 @@
         </div>
       </div>
     </div>
-    <!-- Exam part  -->
-    <div id="exam-viz"></div>
-    <div id="result-viz"></div>
+    <div class="exam-results-container">
+      <div class="exam-results-wrapper">
+        <!-- Exam part  -->
+        <div id="exam-viz"></div>
+        <!-- Result part -->
+        <div id="result-viz"></div>
+      </div>
+    </div>
   </div>
 
   <div class="sidebar-menu" id="sidebar-menu">
@@ -357,10 +400,9 @@
         .catch(error => console.error('Error:', error));
     }
 
-    //FUNCION PARA DESPLEGAR EL EXAME Y CONTESTARLO
     function displayExam(examData) {
       const examContainer = document.getElementById('exam-viz');
-      examContainer.innerHTML = ''; // para limpiar el contenedor antes de mostrar un otro examen
+      examContainer.innerHTML = ''; // para limpiar el contenedor antes de mostrar otro examen
 
       //  título del examen
       const examTitle = document.createElement('h2');
@@ -460,7 +502,6 @@
         .catch(error => console.error('Error:', error));
     }
 
-    //PARA DESPLEGAR RESULTADOS
     function displayResult(resultData, resultButton) {
       const resultContainer = document.getElementById('result-viz');
       resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo resultado
@@ -470,25 +511,51 @@
       resultTitle.textContent = `Resultado del Examen: ${resultData.title}`;
       resultContainer.appendChild(resultTitle);
 
-      // tema
-      const topicSubtitle = document.createElement('h3');
-      topicSubtitle.textContent = `Tema: ${resultData.topic}`;
-      resultContainer.appendChild(topicSubtitle);
+      // Crear una tabla para mostrar la información del resultado
+      const resultTable = document.createElement('table');
+      resultTable.classList.add('results-table', 'table', 'table-striped');
 
-      // código del examen
-      const examCodePara = document.createElement('p');
-      examCodePara.textContent = `Código del Examen: ${resultData.exam_code}`;
-      resultContainer.appendChild(examCodePara);
+      const tableBody = document.createElement('tbody');
 
-      //  puntaje
-      const scorePara = document.createElement('p');
-      scorePara.textContent = `Calificación: ${resultData.score}`;
-      resultContainer.appendChild(scorePara);
+      const row1 = document.createElement('tr');
+      const cell1_1 = document.createElement('th');
+      cell1_1.textContent = 'Tema';
+      const cell1_2 = document.createElement('td');
+      cell1_2.textContent = resultData.topic || 'No disponible';
+      row1.appendChild(cell1_1);
+      row1.appendChild(cell1_2);
 
-      // Crear la fecha y hora
-      const timestampPara = document.createElement('p');
-      timestampPara.textContent = `Fecha y Hora: ${new Date(resultData.timestamp).toLocaleString()}`;
-      resultContainer.appendChild(timestampPara);
+      const row2 = document.createElement('tr');
+      const cell2_1 = document.createElement('th');
+      cell2_1.textContent = 'Código del Examen';
+      const cell2_2 = document.createElement('td');
+      cell2_2.textContent = resultData.exam_code || 'No disponible';
+      row2.appendChild(cell2_1);
+      row2.appendChild(cell2_2);
+
+      const row3 = document.createElement('tr');
+      const cell3_1 = document.createElement('th');
+      cell3_1.textContent = 'Calificación';
+      const cell3_2 = document.createElement('td');
+      cell3_2.textContent = resultData.score;
+      row3.appendChild(cell3_1);
+      row3.appendChild(cell3_2);
+
+      const row4 = document.createElement('tr');
+      const cell4_1 = document.createElement('th');
+      cell4_1.textContent = 'Fecha y Hora';
+      const cell4_2 = document.createElement('td');
+      cell4_2.textContent = new Date(resultData.timestamp).toLocaleString();
+      row4.appendChild(cell4_1);
+      row4.appendChild(cell4_2);
+
+      tableBody.appendChild(row1);
+      tableBody.appendChild(row2);
+      tableBody.appendChild(row3);
+      tableBody.appendChild(row4);
+
+      resultTable.appendChild(tableBody);
+      resultContainer.appendChild(resultTable);
 
       // Agregar la clase active-result al botón del resultado actual
       const activeButton = document.querySelector('.result-button.active-result');
