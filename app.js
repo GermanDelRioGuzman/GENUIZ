@@ -629,6 +629,23 @@ app.post('/save-exam-result', ensureAuthenticated, ensureRole('student'), (req, 
 });
 
 
+// Obtener un examen por ID
+app.get('/get-exam-by-id', ensureAuthenticated, ensureRole('student'), (req, res) => {
+    const examId = req.query.id;
+
+    const query = 'SELECT * FROM exams_json WHERE id = ?';
+    connection.query(query, [examId], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el examen:', err);
+            return res.status(500).json({ error: 'Error al obtener el examen' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Examen no encontrado' });
+        }
+        res.json(results[0]);
+    });
+});
+
 //NO VAYAN A BORRAR USUARIOS SHHHHH
 // Eliminar un usuario MANUALMENTE  (o sea en la base de datos)
 app.delete('/delete-user', ensureAuthenticated, (req, res) => {

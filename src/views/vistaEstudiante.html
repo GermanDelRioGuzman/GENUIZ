@@ -153,7 +153,7 @@
       border-radius: 8px;
       overflow-y: auto;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      color: #333333; /* Color del texto */
+      color: #333333;
       width: 48%;
       height: calc(100% - 40px);
     }
@@ -286,15 +286,6 @@
         <input type="text" id="examCode" class="form-control" placeholder="Código del Examen">
         <button class="btn-enter-exam" id="enterExamCode">Ingresar Código</button>
       </div>
-      <div class="scroll-padre">
-        <div class="scroll-bg">
-          <div class="scroll-div">
-            <div class="results-container">
-              <!-- Aquí se mostrarán los resultados de los exámenes -->
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="exam-results-container">
       <div class="exam-results-wrapper">
@@ -351,19 +342,36 @@
       fetch('/get-student-results')
         .then(response => response.json())
         .then(results => {
-          const container = document.querySelector('.results-container');
+          const container = document.getElementById('exam-viz');
+          const resultsTable = document.createElement('table');
+          resultsTable.classList.add('results-table', 'table', 'table-striped');
+          
+          const thead = document.createElement('thead');
+          thead.innerHTML = `
+            <tr>
+              <th>Examen</th>
+              <th>Fecha</th>
+              <th>Puntaje</th>
+            </tr>
+          `;
+          resultsTable.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
           results.forEach(result => {
-            const button = document.createElement('button');
-            button.textContent = `Examen: ${result.title} - Calificación: ${result.score}`;
-            button.className = 'result-button';
-
-            button.addEventListener("click", function (e) {
-              e.preventDefault();
-              displayResult(result, button);
+            const row = document.createElement('tr');
+            row.addEventListener('click', function () {
+              displayResult(result);
             });
-
-            container.appendChild(button);
+            row.innerHTML = `
+              <td>${result.title}</td>
+              <td>${new Date(result.timestamp).toLocaleDateString()}</td>
+              <td>${result.score}</td>
+            `;
+            tbody.appendChild(row);
           });
+
+          resultsTable.appendChild(tbody);
+          container.appendChild(resultsTable);
         })
         .catch((error) => console.error('Error:', error));
     };
@@ -499,13 +507,11 @@
         .catch(error => console.error('Error:', error));
     }
 
-    function displayResult(resultData, resultButton) {
-      console.log(resultData); // Añade este console.log para inspeccionar los datos
-
+    function displayResult(resultData) {
       const resultContainer = document.getElementById('result-viz');
       resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo resultado
 
-      // titulo del examen
+      // Título del examen
       const resultTitle = document.createElement('h2');
       resultTitle.textContent = `Resultado del Examen: ${resultData.title}`;
       resultContainer.appendChild(resultTitle);
@@ -538,14 +544,36 @@
       resultTable.appendChild(tableBody);
       resultContainer.appendChild(resultTable);
 
-      // Agregar la clase active-result al botón del resultado actual
-      const activeButton = document.querySelector('.result-button.active-result');
-      if (activeButton) {
-          activeButton.classList.remove('active-result');
-      }
-      if (resultButton) {
-          resultButton.classList.add('active-result');
-      }
+      // Mostrar las preguntas y respuestas
+      const examDataObj = resultData.exam_data;
+      const examQuestionsList = document.createElement('div');
+      examDataObj.preguntas.forEach((pregunta, index) => {
+        const questionItem = document.createElement('div');
+        questionItem.classList.add('question-item');
+        const questionText = document.createElement('p');
+        questionText.textContent = `${index + 1}. ${pregunta.enunciado}`;
+
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options-list');
+
+        pregunta.opciones.forEach(opcion => {
+          const optionItem = document.createElement('li');
+          optionItem.textContent = opcion;
+
+          // Comparar con la respuesta correcta y aplicar estilo
+          if (opcion === pregunta.respuesta) {
+            optionItem.classList.add('correct-answer'); // Aquí aplicas el estilo para la respuesta correcta
+          }
+
+          optionsList.appendChild(optionItem);
+        });
+
+        questionItem.appendChild(questionText);
+        questionItem.appendChild(optionsList);
+        examQuestionsList.appendChild(questionItem);
+      });
+
+      resultContainer.appendChild(examQuestionsList);
     }
   </script>
 </body>
