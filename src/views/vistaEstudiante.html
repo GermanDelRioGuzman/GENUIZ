@@ -168,7 +168,6 @@
       color: #333333;
       width: 48%;
       height: 50%;
-
     }
 
     .correct-answer {
@@ -536,7 +535,7 @@
             alert(data.error);
           } else {
             alert(`Tu calificación es: ${finalScore}`);
-            window.location.reload(); // Recargar la página para actualizar la info
+            window.location.reload(); // Recarga la pag para actualizar la info
           }
         })
         .catch(error => console.error('Error:', error));
@@ -544,14 +543,14 @@
 
     function displayResult(resultData) {
       const resultContainer = document.getElementById('result-viz');
-      resultContainer.innerHTML = ''; // Limpiar el contenedor antes de mostrar un nuevo resultado
+      resultContainer.innerHTML = ''; // limpia el contenedor antes de mostrar un nuevo resultado
 
       // Título del examen
       const resultTitle = document.createElement('h2');
       resultTitle.textContent = `Resultado del Examen: ${resultData.title}`;
       resultContainer.appendChild(resultTitle);
 
-      // Crear una tabla para mostrar la información del resultado
+      // Crea una tabla para mostrar la información del resultado
       const resultTable = document.createElement('table');
       resultTable.classList.add('results-table', 'table', 'table-striped');
 
@@ -610,7 +609,6 @@
 
       resultContainer.appendChild(examQuestionsList);
     }
-
   </script>
 </body>
 </html>

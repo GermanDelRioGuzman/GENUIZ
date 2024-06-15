@@ -361,6 +361,21 @@
     .results-button:hover {
       background-color: #595959;
     }
+
+    .edit-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-align: center;
+      margin-right: 10px;
+    }
+
+    .edit-button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
 <body>
@@ -582,6 +597,15 @@
           .catch(error => console.error('Error al obtener los resultados:', error));
       });
       examContainer.appendChild(resultsButton);
+
+      // Crea el botón para editar el examen
+      const editButton = document.createElement('button');
+      editButton.textContent = 'Editar Examen';
+      editButton.className = 'edit-button';
+      editButton.addEventListener('click', function () {
+        window.location.href = `editarExamen.html?id=${examData.id}`;
+      });
+      examContainer.appendChild(editButton);
 
       // Agrega la clase active-exam al botón del examen actual
       const activeButton = document.querySelector('.exam-button.active-exam');

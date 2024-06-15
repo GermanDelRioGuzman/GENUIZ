@@ -1,4 +1,5 @@
-//PRUEBAS GENUIZ
+//PRUEBA 1
+
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
@@ -30,7 +31,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//middleware to invalidate cache
+// Middleware para invalidar la caché
 app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.setHeader('Expires', '-1');
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
 console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
 console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET);
 
+//Conexión a la base de datos
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -54,9 +56,9 @@ connection.connect((err) => {
         return;
     }
     console.log('Conexión exitosa a la base de datos');
-   
 });
 
+// Configuración estrategia local de Passport
 passport.use(new PassportLocal(async function (username, password, done) {
     const query = 'SELECT users.*, role.role_name FROM users LEFT JOIN role ON users.role_id = role.id WHERE username = ?';
     connection.query(query, [username], async (err, results) => {
@@ -79,8 +81,7 @@ passport.use(new PassportLocal(async function (username, password, done) {
     });
 }));
 
-//login with Google
-
+// Configuración  Google  login
 passport.use('google-login', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -103,8 +104,7 @@ function(token, tokenSecret, profile, done) {
     });
 }));
 
-//register with Google
-
+// Configuración  Google registro
 passport.use('google-register', new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -147,6 +147,7 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
+// Para verificar autenticacion
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -163,6 +164,7 @@ function ensureRole(role) {
     }
 }
 
+// Ruta principal
 app.get("/", ensureAuthenticated, (req, res) => {
     const userRole = req.user.role_name;
     if (userRole === 'student') {
@@ -174,7 +176,7 @@ app.get("/", ensureAuthenticated, (req, res) => {
     }
 });
 
-//login 
+// Ruta para iniciar sesión
 app.get("/iniciosesion", (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'iniciosesion.html'));
 });
@@ -196,8 +198,7 @@ app.post("/iniciosesion", (req, res, next) => {
     })(req, res, next);
 });
 
-//register
-
+// Ruta para registrarse
 app.get("/registrarme", (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'registrarme.html'));
 });
@@ -244,7 +245,7 @@ app.post("/registrarme", (req, res, next) => {
     });
 });
 
-//google
+// Autenticación con Google para login
 app.get('/auth/google/login', passport.authenticate('google-login', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback/login', 
@@ -257,6 +258,7 @@ app.get('/auth/google/callback/login',
     }
 );
 
+// Autenticación con Google para registro
 app.get('/auth/google/register', passport.authenticate('google-register', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback/register', 
@@ -266,6 +268,7 @@ app.get('/auth/google/callback/register',
     }
 );
 
+// Ruta para completar el registro
 app.get('/completar-registro', ensureAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'completar-registro.html'));
 });
@@ -301,6 +304,7 @@ app.post('/completar-registro', ensureAuthenticated, (req, res) => {
     });
 });
 
+// Rutas para vistas específicas según el rol
 app.get('/vistaEstudiante.html', ensureAuthenticated, ensureRole('student'), (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'vistaEstudiante.html'));
 });
@@ -313,7 +317,13 @@ app.get('/generador.html', ensureAuthenticated, ensureRole('teacher'), (req, res
     res.sendFile(path.join(__dirname, 'src', 'views', 'generador.html'));
 });
 
-// logout
+//nueva
+app.get('/generador.html', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'views', 'editarExamen.html')); //ya funciona omg
+});
+
+
+// Ruta para cerrar sesión
 app.get('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {
@@ -329,7 +339,7 @@ app.get('/logout', (req, res) => {
     });
 });
 
-
+// Servir archivos estáticos  carpeta 'src/views'
 app.use(express.static(path.join(__dirname, 'src', 'views')));
 
 // Rutas para manejar exámenes
@@ -385,7 +395,6 @@ app.post('/recibir-datos', ensureAuthenticated, ensureRole('teacher'), async (re
     }
 });
 
-
 app.post('/save-exam', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
     const { title, topic, description_, level, content } = req.body;
     const teacher_id = req.user.id;
@@ -394,14 +403,14 @@ app.post('/save-exam', ensureAuthenticated, ensureRole('teacher'), (req, res) =>
     console.log("ID del profesor:", teacher_id);
     console.log("Datos recibidos para guardar:", req.body);
 
-    // Verificar que la estructura del contenido es correcta
+    // para verificar si la estructura es correcta
     if (!content || !content.preguntas || !Array.isArray(content.preguntas) || content.preguntas.length === 0) {
         console.error("Estructura de contenido inválida:", content);
         return res.status(400).json({ error: "Invalid content structure" });
     }
 
-    const examData = content; // El contenido del examen en formato JSON
-    const examCode = Math.random().toString(36).substring(2, 10).toUpperCase(); // Generar un código único para el examen
+    const examData = content; // en formato JSON
+    const examCode = Math.random().toString(36).substring(2, 10).toUpperCase(); // código único para el examen
 
     const examQuery = 'INSERT INTO exams_json (teacher_id, title, topic, description_, level, exam_code, exam_data) VALUES (?, ?, ?, ?, ?, ?, ?)';
     connection.query(examQuery, [teacher_id, title, topic, description_, level, examCode, JSON.stringify(examData)], (err, examResults) => {
@@ -438,10 +447,9 @@ app.get('/get-exam-json', ensureAuthenticated, ensureRole('teacher'), (req, res)
     });
 });
 
-//PARA ELIMINAR EXAMEN Y REGISTROS DEPENDIENTES
+// primero elimina resultados y cualquier registro dependiente al examed
 app.delete('/delete-exam', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
     const examId = req.query.id;
-
 
     const deleteResultsQuery = 'DELETE FROM exam_results WHERE exam_id = ?';
     connection.query(deleteResultsQuery, [examId], function (err) {
@@ -450,7 +458,7 @@ app.delete('/delete-exam', ensureAuthenticated, ensureRole('teacher'), (req, res
             return res.status(500).send('Error al eliminar los resultados del examen');
         }
 
-        // Luego elimina el examen en exams_json
+        // después elimina el examen 
         const deleteExamQuery = 'DELETE FROM exams_json WHERE id = ?';
         connection.query(deleteExamQuery, [examId], function (err) {
             if (err) {
@@ -462,9 +470,7 @@ app.delete('/delete-exam', ensureAuthenticated, ensureRole('teacher'), (req, res
     });
 });
 
-
-//PRUEBAS EXAMEN
-// Ruta para obtener un examen por código
+// Ruta para obtener un examen a través del código
 app.get('/get-exam-by-code', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const examCode = req.query.code;
     connection.query('SELECT * FROM exams_json WHERE exam_code = ?', [examCode], (err, results) => {
@@ -494,7 +500,7 @@ app.post('/save-exam-result', ensureAuthenticated, ensureRole('student'), (req, 
     });
 });
 
-// Modifica la ruta de vistaProfesor.html para mostrar los resultados
+// Actualiza la ruta de vistaProfesor.html para mostrar los resultados
 app.get('/get-exam-results', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
     const examId = req.query.examId;
     const query = `
@@ -512,8 +518,7 @@ app.get('/get-exam-results', ensureAuthenticated, ensureRole('teacher'), (req, r
     });
 });
 
-//Prueba
-//Para ver los datos del profe:
+// Prueba para ver los datos del profe
 app.get('/get-profesor-info', ensureAuthenticated, (req, res) => {
     const userId = req.user.id;
     const query = 'SELECT name, username FROM users WHERE id = ?';
@@ -531,10 +536,7 @@ app.get('/get-profesor-info', ensureAuthenticated, (req, res) => {
     });
   });
   
-
-  //PRUEBA 
-  //para ver los datos del alumno
-  // Obtener información del estudiante
+// Prueba para ver los datos del estudiante
 app.get('/get-student-info', ensureAuthenticated, (req, res) => {
     const userId = req.user.id;
     const query = 'SELECT name, username FROM users WHERE id = ?';
@@ -579,7 +581,6 @@ app.get('/get-student-results', ensureAuthenticated, ensureRole('student'), (req
     });
 });
 
-
 // Verificar si un examen ya ha sido respondido por el estudiante
 app.get('/check-exam-result', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const examId = req.query.examId;
@@ -605,7 +606,7 @@ app.get('/check-exam-result', ensureAuthenticated, ensureRole('student'), (req, 
     });
 });
 
-// Obtener un examen por código
+// Obtener un examen a través del código
 app.get('/get-exam-by-code', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const examCode = req.query.code;
 
@@ -637,7 +638,6 @@ app.post('/save-exam-result', ensureAuthenticated, ensureRole('student'), (req, 
     });
 });
 
-
 // Obtener un examen por ID
 app.get('/get-exam-by-id', ensureAuthenticated, ensureRole('student'), (req, res) => {
     const examId = req.query.id;
@@ -655,8 +655,7 @@ app.get('/get-exam-by-id', ensureAuthenticated, ensureRole('student'), (req, res
     });
 });
 
-//NO VAYAN A BORRAR USUARIOS SHHHHH
-// Eliminar un usuario MANUALMENTE  (o sea en la base de datos)
+// Eliminar un usuario MANUALMENTE (o sea en la base de datos)
 app.delete('/delete-user', ensureAuthenticated, (req, res) => {
     const userId = req.query.id;
 
@@ -669,6 +668,29 @@ app.delete('/delete-user', ensureAuthenticated, (req, res) => {
     });
 });
 
+// Actualizar examen
+app.post('/update-exam', ensureAuthenticated, ensureRole('teacher'), (req, res) => {
+    const { id, title, topic, description_, level, content } = req.body;
 
-//
+    console.log("Datos recibidos para actualizar:", req.body);
+
+    // Verificar que la estructura del contenido es correcta
+    if (!content || !content.preguntas || !Array.isArray(content.preguntas) || content.preguntas.length === 0) {
+        console.error("Estructura de contenido inválida:", content);
+        return res.status(400).json({ error: "Invalid content structure" });
+    }
+
+    const examData = content; // El contenido del examen en formato JSON
+
+    const updateQuery = 'UPDATE exams_json SET title = ?, topic = ?, description_ = ?, level = ?, exam_data = ? WHERE id = ?';
+    connection.query(updateQuery, [title, topic, description_, level, JSON.stringify(examData), id], (err, results) => {
+        if (err) {
+            console.error('Error al actualizar el examen:', err);
+            return res.status(500).json({ error: 'Error al actualizar el examen' });
+        }
+
+        res.json({ message: 'Examen actualizado correctamente' });
+    });
+});
+
 app.listen(8080, () => console.log("Server started on http://localhost:8080"));
