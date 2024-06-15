@@ -1,5 +1,5 @@
-<!-- para pruebas-->
-<!--AL FINAL SEPARAMOS LO DE STYLES-->
+
+<!--PENDIENTE SEPARAR style y script-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -285,7 +285,7 @@
       filter: invert(1);
     }
 
-    /* Estilos para el botón de enviar */
+
     .btn-submit {
       background-color: #030303;
       color: white;
@@ -317,11 +317,11 @@
     </div>
     <div class="exam-results-container">
       <div class="exam-results-wrapper">
-        <!-- Exam part  -->
+        <!-- Examen -->
         <div id="exam-viz">
           <p>Por el momento no hay nada que mostrar.</p>
         </div>
-        <!-- Result part -->
+        <!-- Resultados -->
         <div id="result-viz">
           <p>Por el momento no hay nada que mostrar.</p>
         </div>
@@ -361,7 +361,7 @@
       sidebarMenu.classList.toggle('active');
     });
 
-    // Cargar información del estudiante al cargar la página
+    // Carga la infor del estudiante al cargar la página
     window.onload = function () {
       fetch('/get-student-info') // Endpoint para obtener información del estudiante
         .then(response => response.json())
@@ -375,7 +375,7 @@
         .then(response => response.json())
         .then(results => {
           const container = document.getElementById('exam-viz');
-          container.innerHTML = ''; // Limpiar el contenedor antes de agregar los resultados
+          container.innerHTML = ''; // Limpia el contenedor antes de agregar los resultados
           if (results.length === 0) {
             container.innerHTML = '<p>Por el momento no hay nada que mostrar.</p>';
           } else {
@@ -417,7 +417,7 @@
           if (data.error) {
             alert(data.error);
           } else {
-            // Verificar si el examen ya fue contestado
+            // Verifica si el examen ya fue contestado
             checkExamResult(data.id, data);
           }
         })
@@ -594,9 +594,9 @@
           const optionItem = document.createElement('li');
           optionItem.textContent = opcion;
 
-          // Comparar con la respuesta correcta y aplicar estilo
+          // Compara con la respuesta correcta y aplica el estilo
           if (opcion === pregunta.respuesta) {
-            optionItem.classList.add('correct-answer'); // Aquí aplicas el estilo para la respuesta correcta
+            optionItem.classList.add('correct-answer'); 
           }
 
           optionsList.appendChild(optionItem);

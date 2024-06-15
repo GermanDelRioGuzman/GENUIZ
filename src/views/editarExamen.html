@@ -1,3 +1,4 @@
+<!--PENDIENTE SEPARAR style y script-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,7 +18,6 @@
       border-radius: 10px;
       padding: 20px;
       margin-top: 20px;
-      
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
@@ -59,36 +59,33 @@
       margin-right: 10px;
     }
 
-    .btn-secondary {
-      margin-bottom: 20px;
+
+     /* botones de añadir y eliminar*/
+    .btn-secondary,
+    .btn-danger,
+    .btn-primary {
       border-radius: 20px;
     }
 
-    .btn-danger {
-      margin-left: 10px;
-      border-radius: 15px;
-    }
-
-    #add-question-btn {
-      display: block;
-      width: 100%;
-      margin-bottom: 20px;
+    #add-question-btn,
+    #add-option-btn,
+    .btn-delete-question,
+    .btn-delete-option {
       border-radius: 20px;
     }
 
     .custom-save-button {
-    background-color: #202220; 
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-  }
+      background-color: #28a745; 
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px; 
+      cursor: pointer;
+    }
 
-  .custom-save-button:hover {
-    background-color: #5b615b; 
-   ¿
-  }
+    .custom-save-button:hover {
+      background-color: #218838; 
+    }
   </style>
 </head>
 <body>
@@ -123,21 +120,22 @@
 
   <script>
 
-    //para reensablar el json
-    document.getElementById('edit-exam-form').addEventListener('submit', function(event) {
+
+    document.getElementById('edit-exam-form').addEventListener('submit', function(event) {//evento envio del formulario
       event.preventDefault();
       
-      const examId = new URLSearchParams(window.location.search).get('id');//obtiene el id del examen
-      const updatedExam = { //construye un nuevo objeto con los datos actualizados 
+      const examId = new URLSearchParams(window.location.search).get('id');
+      const updatedExam = {
         id: examId,
         title: document.getElementById('title').value,
         topic: document.getElementById('topic').value,
         description_: document.getElementById('description_').value,
         level: document.getElementById('level').value,
-        content: { preguntas: getQuestionsFromForm() } //  preguntas del formulario
+        content: { preguntas: getQuestionsFromForm() } // Obtiene las preguntas del formulario
       };
 
-      fetch(`/update-exam`, { //envia lo datos 
+      //solicitud para actualizar el examen
+      fetch(`/update-exam`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -157,13 +155,13 @@
       });
     });
 
-    document.getElementById('add-question-btn').addEventListener('click', function() { //para agregar una pregunt
+    document.getElementById('add-question-btn').addEventListener('click', function() { //evento para añadir pregunta
       addQuestionForm();
     });
 
-    function addQuestionForm(question = { enunciado: '', opciones: [], respuesta: '' }) {//funcion para agragar pregutna
+    function addQuestionForm(question = { enunciado: '', opciones: [], respuesta: '' }) { //agrega una pregunta al formulario
       const container = document.getElementById('questions-container');
-      const questionIndex = container.childElementCount;  // 
+      const questionIndex = container.childElementCount;  // Índice para asegurar nombres únicos
 
       const questionDiv = document.createElement('div');
       questionDiv.classList.add('question-container');
@@ -178,7 +176,8 @@
 
       const deleteQuestionBtn = document.createElement('button');
       deleteQuestionBtn.textContent = 'Eliminar';
-      deleteQuestionBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+      deleteQuestionBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'btn-delete-question');
+      deleteQuestionBtn.type = 'button'; // Evita el envío del formulario
       deleteQuestionBtn.addEventListener('click', () => {
         container.removeChild(questionDiv);
       });
@@ -199,7 +198,8 @@
 
       const addOptionBtn = document.createElement('button');
       addOptionBtn.textContent = 'Añadir Opción';
-      addOptionBtn.classList.add('btn', 'btn-secondary', 'btn-sm');
+      addOptionBtn.classList.add('btn', 'btn-secondary', 'btn-sm', 'btn-add-option');
+      addOptionBtn.type = 'button'; // Evita el envío del formulario
       addOptionBtn.addEventListener('click', () => {
         addOptionForm(optionsContainer, '', '', questionIndex);
       });
@@ -208,7 +208,7 @@
       container.appendChild(questionDiv);
     }
 
-    function addOptionForm(container, option = '', correctAnswer = '', questionIndex) {
+    function addOptionForm(container, option = '', correctAnswer = '', questionIndex) { //para agregar opción a la pregunta
       const optionDiv = document.createElement('div');
       optionDiv.classList.add('option-item');
 
@@ -220,14 +220,15 @@
 
       const correctAnswerInput = document.createElement('input');
       correctAnswerInput.type = 'radio';
-      correctAnswerInput.name = `correct-answer-${questionIndex}`;  // una op correcta para cada pregunta
+      correctAnswerInput.name = `correct-answer-${questionIndex}`;  // Asegurar que el nombre sea único para cada pregunta
       correctAnswerInput.value = option;
       correctAnswerInput.checked = option === correctAnswer;
       optionDiv.appendChild(correctAnswerInput);
 
       const deleteOptionBtn = document.createElement('button');
-      deleteOptionBtn.textContent = 'x';
-      deleteOptionBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+      deleteOptionBtn.textContent = 'Eliminar';
+      deleteOptionBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'btn-delete-option');
+      deleteOptionBtn.type = 'button'; // Evita el envío del formulario
       deleteOptionBtn.addEventListener('click', () => {
         container.removeChild(optionDiv);
       });
@@ -236,7 +237,7 @@
       container.appendChild(optionDiv);
     }
 
-    function getQuestionsFromForm() { // para obtener las preguntas del formulario y convertirlas en un objeto
+    function getQuestionsFromForm() { //Funcion para obetener las preguntas 
       const questions = [];
       const questionContainers = document.querySelectorAll('.question-container');
 
@@ -251,10 +252,10 @@
       return questions;
     }
 
-    window.onload = function() {
+    window.onload = function() { // Función para cargar el examen al cargar la página
       const examId = new URLSearchParams(window.location.search).get('id');
       
-      fetch(`/get-exam-json?id=${examId}`)
+      fetch(`/get-exam-json?id=${examId}`) // solicitud para obtener los datos del examen
         .then(response => response.json())
         .then(exam => {
           document.getElementById('title').value = exam.title;
