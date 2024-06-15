@@ -1,8 +1,26 @@
 # GENUIZ
-repository to make the commits of the block project 
 
-Nota: Para probarlo creen las sigueintes tablas en mysql:
 
+NOTA: Para correr los servers
+- crear .env:
+  
+ OPENAI_API_KEY=" "
+
+ GOOGLE_CLIENT_ID= 
+ 
+ GOOGLE_CLIENT_SECRET=
+
+
+- correr app.js
+
+-> Asegurense de tener instalados:
+
+  -  npm install dotenv express passport cookie-parser express-session passport-local passport-google-oauth20 mysql bcrypt connect-flash
+  -  
+
+NOTA: Para probarlo creen las siguientes tablas en MySQL:
+
+```sql
 CREATE DATABASE genuiz;
 USE genuiz;
 
@@ -44,16 +62,5 @@ CREATE TABLE IF NOT EXISTS exam_results (
     FOREIGN KEY (exam_id) REFERENCES exams_json(id) ON DELETE CASCADE
 );
 
-
-NOTA: Para correr los servers
-- crear .env:
-OPENAI_API_KEY="  "
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-
-- correr app.js
-
--> Asegurense de tener instalados:
-   npm install dotenv express passport cookie-parser express-session passport-local passport-google-oauth20 mysql bcrypt connect-flash
 
   
